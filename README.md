@@ -81,15 +81,8 @@ Here’s an overview of how the project is organized:
 
 ### Why I Created NexG Lab? 🌟
 
-NexG Lab was born out of my own coding and Linux journey. As I explored programming, web development, and Linux systems, I faced many challenges that often felt overwhelming:
-
-- Setting up development environments on Linux for the first time
-- Debugging tricky code issues in JavaScript, Next.js, and full-stack projects
-- Understanding database management with tools like Prisma and PostgreSQL
-- Keeping up with modern UI/UX design practices and component libraries
-- Finding reliable resources for solving errors, deployment issues, and optimization problems
-
-Each obstacle required a lot of trial and error, research, and patience. I realized that many of these challenges are common for developers starting out, especially for those learning Linux, coding, and modern web development.
+NexG Lab was born out of my own coding and Linux journey. As I explored programming, web development, and Linux systems, I faced many challenges that often felt overwhelming
+. I realized that many of these challenges are common for developers starting out, especially for those learning Linux, coding, and modern web development.
 
 So, I decided to create NexG Lab — a platform where I can share my experiences, solutions, and tutorials:
 

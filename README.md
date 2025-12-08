@@ -1,17 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## NexG Lab Blog
 
-## Getting Started
+This is a Next.js blog project, designed to share content related to coding, Linux, design, and tech.
 
-First, run the development server:
+
+### How to start run my project
+
+- Clone my github repo
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+  git clone https://github.com/sadid56/nexg-lab.git
+  ```
+ - Install dependencies
+
+```bash
+pnpm install
+```
+
+- Create on root directory .env file and use databse url
+
+  ```
+  DATABASE_URL="your data base url"
+  ```
+
+  - Generate prisma
+  ```
+  pnpm prisma generate
+  ```
+
+  - Run project
+
+```
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

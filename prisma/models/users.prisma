@@ -1,0 +1,8 @@
+model User {
+  id        String     @id @default(cuid())
+  name      String?
+  email     String?    @unique
+  posts     Post[]
+  feedbacks Feedback[]
+  reactions Reaction[]
+}

@@ -20,6 +20,9 @@
 # production
 /build
 
+prisma/generated
+prisma/migrations
+
 # misc
 .DS_Store
 *.pem

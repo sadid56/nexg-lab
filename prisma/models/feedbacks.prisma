@@ -1,0 +1,9 @@
+model Feedback {
+  id        String   @id @default(cuid())
+  message   String
+  userId    String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}

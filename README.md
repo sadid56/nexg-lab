@@ -34,6 +34,7 @@ pnpm dev
 
 Here’s an overview of how the project is organized:
 
+```
 ├── components.json
 ├── eslint.config.mjs
 ├── next.config.ts
@@ -69,6 +70,7 @@ Here’s an overview of how the project is organized:
 │   └── providers
 │       └── Providers.tsx
 └── tsconfig.json
+```
 
 ### Features 🛠
 

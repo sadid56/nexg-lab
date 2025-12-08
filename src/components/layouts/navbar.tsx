@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { ModeToggle } from "../global/ModeToggle";
 
 export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -15,7 +16,7 @@ export default function Navbar() {
       <div className='max-w-[1352px] mx-auto flex justify-between items-center h-16'>
         {/* Left side - Website Name */}
         <Link href='/' className='text-xl font-bold text-gray-900 dark:text-white'>
-          MyTechBlog
+          NexG Lab
         </Link>
 
         {/* Right side */}
@@ -31,6 +32,8 @@ export default function Navbar() {
               <Input placeholder='Search...' autoFocus />
             </DialogContent>
           </Dialog>
+
+          <ModeToggle />
 
           {/* GitHub Button */}
           <Button asChild variant='outline' size='sm' className='px-3 py-1'>

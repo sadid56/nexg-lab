@@ -91,8 +91,6 @@ So, I decided to create NexG Lab — a platform where I can share my experiences
 - Tech tutorials, design insights, and project showcases
 - A place for future developers to learn without repeating the same struggles
 
-My goal is simple: help the next generation of developers overcome the hurdles I faced, so they can focus more on building and creating, instead of getting stuck on avoidable problems.
-
 NexG Lab is more than a blog — it’s a knowledge hub for learning, experimentation, and growth in coding, Linux, and tech.
 
 ## Thanks for exploring NexG Lab ❤️

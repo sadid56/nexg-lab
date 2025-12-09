@@ -2,30 +2,34 @@
 
 This is a Next.js blog project, designed to share content related to coding, Linux, design, and tech.
 
-
 ### How to run my project 👨🏻‍💻
 
 - Clone my github repo
+
 ```
 git clone https://github.com/sadid56/nexg-lab.git
 ```
 
- - Install dependencies
+- Install dependencies
+
 ```
 pnpm install
 ```
 
 - Create on root directory .env file and use databse url
+
 ```
 DATABASE_URL="your data base url"
 ```
 
 - Generate prisma
+
 ```
 pnpm prisma generate
 ```
 
 - Run project
+
 ```
 pnpm dev
 ```
@@ -43,11 +47,6 @@ Here’s an overview of how the project is organized:
 ├── pnpm-lock.yaml
 ├── postcss.config.mjs
 ├── prisma
-│   ├── models
-│   │   ├── feedbacks.prisma
-│   │   ├── posts.prisma
-│   │   ├── reactions.prisma
-│   │   └── users.prisma
 │   └── schema.prisma
 ├── prisma.config.ts
 ├── public

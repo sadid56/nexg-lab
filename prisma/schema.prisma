@@ -6,3 +6,101 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id        String     @id @default(cuid())
+  name      String?
+  email     String?    @unique
+  feedbacks Feedback[]
+  reactions Reaction[]
+}
+
+model Post {
+  id           String     @id @default(cuid())
+  title        String
+  slug         String     @unique
+  tags         String[]
+  coverImage   String?
+  descriptions String
+  status       Status     @default(pending)
+  feedbacks    Feedback[]
+  reactions    Reaction[]
+  keywords     Keywords[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  sections     Section[]
+  userId       String?
+  categoryId   String?
+  category     Category?  @relation(fields: [categoryId], references: [id])
+}
+
+model Section {
+  id       String  @id @default(cuid())
+  postId   String
+  post     Post    @relation(fields: [postId], references: [id])
+  markdown String
+  blocks   Block[] // ADD THIS LINE - this was missing
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  title     String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  status    Status   @default(pending)
+  updatedAt DateTime @updatedAt
+  posts     Post[]
+}
+
+model Block {
+  id        String    @id @default(cuid())
+  type      BlockType
+  content   String?
+  sectionId String // REMOVE the ? to make it required
+  section   Section   @relation(fields: [sectionId], references: [id])
+}
+
+enum BlockType {
+  INFO
+  WARNING
+  ERROR
+  TIPS
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  message   String
+  userId    String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Keywords {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  title     String
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  emoji     String
+  userId    String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId, emoji])
+}
+
+enum Status {
+  pending
+  active
+  unactive
+}

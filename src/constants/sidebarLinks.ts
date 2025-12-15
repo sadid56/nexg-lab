@@ -42,7 +42,7 @@ export const sidebarLinks: NavConfig = {
         },
         {
           title: "- Keywords",
-          url: "/dashboard/keyboards",
+          url: "/dashboard/blogs/keywords",
         },
       ],
     },

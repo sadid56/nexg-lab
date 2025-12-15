@@ -1,13 +1,10 @@
 import prisma from "@/lib/prisma";
+import { RouteParams } from "@/types/next";
 import { generateSlug } from "@/utils/generateSlug";
 import { NextRequest, NextResponse } from "next/server";
 
-type PageProps = {
-  params: Promise<{ id: string }>;
-};
-
 // GET single category
-export async function GET(request: NextRequest, { params }: PageProps) {
+export async function GET(request: NextRequest, { params }: RouteParams<"id">) {
   try {
     const { id } = await params;
     const category = await prisma.category.findUnique({
@@ -19,13 +16,13 @@ export async function GET(request: NextRequest, { params }: PageProps) {
     }
 
     return NextResponse.json(category);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch category" }, { status: 500 });
   }
 }
 
 // PUT update category
-export async function PUT(request: NextRequest, { params }: PageProps) {
+export async function PUT(request: NextRequest, { params }: RouteParams<"id">) {
   try {
     const body = await request.json();
     const { id } = await params;
@@ -50,7 +47,7 @@ export async function PUT(request: NextRequest, { params }: PageProps) {
 }
 
 // DELETE category
-export async function DELETE(request: NextRequest, { params }: PageProps) {
+export async function DELETE(request: NextRequest, { params }: RouteParams<"id">) {
   try {
     const { id } = await params;
     await prisma.category.delete({
@@ -58,7 +55,7 @@ export async function DELETE(request: NextRequest, { params }: PageProps) {
     });
 
     return NextResponse.json({ message: "Category deleted successfully" });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to delete category" }, { status: 500 });
   }
 }

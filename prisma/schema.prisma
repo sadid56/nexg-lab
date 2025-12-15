@@ -25,21 +25,19 @@ model Post {
   status       Status     @default(pending)
   feedbacks    Feedback[]
   reactions    Reaction[]
-  keywords     Keywords[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   sections     Section[]
   userId       String?
-  categoryId   String?
-  category     Category?  @relation(fields: [categoryId], references: [id])
+  category     String
 }
 
 model Section {
   id       String  @id @default(cuid())
   postId   String
-  post     Post    @relation(fields: [postId], references: [id])
+  post     Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
   markdown String
-  blocks   Block[] // ADD THIS LINE - this was missing
+  blocks   Block[]
 }
 
 model Category {
@@ -49,15 +47,14 @@ model Category {
   createdAt DateTime @default(now())
   status    Status   @default(pending)
   updatedAt DateTime @updatedAt
-  posts     Post[]
 }
 
 model Block {
   id        String    @id @default(cuid())
   type      BlockType
   content   String?
-  sectionId String // REMOVE the ? to make it required
-  section   Section   @relation(fields: [sectionId], references: [id])
+  sectionId String
+  section   Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 }
 
 enum BlockType {
@@ -72,7 +69,7 @@ model Feedback {
   message   String
   userId    String
   postId    String
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
@@ -81,8 +78,6 @@ model Keywords {
   id        String    @id @default(cuid())
   slug      String    @unique
   title     String
-  postId    String
-  post      Post      @relation(fields: [postId], references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime?
 }
@@ -92,7 +87,7 @@ model Reaction {
   emoji     String
   userId    String
   postId    String
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 

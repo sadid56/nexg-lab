@@ -1,9 +1,14 @@
+import { Status } from "@/theme/status-badge";
+
 export interface BlogRootSettings {
   title: string;
   descriptions: string;
-  coverImage?: File | null;
+  coverImage?: File;
   category: string;
   tags: string[];
+  status?: Status;
+  slug: string;
+  id?: string;
 }
 
 export type SectionBlockType = "info" | "warning" | "error" | "tips";

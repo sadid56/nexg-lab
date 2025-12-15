@@ -1,10 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-nocheck
-
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
-import React, { useState, useCallback } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import React, { useState, useCallback, useEffect } from "react";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import MDEditor from "@uiw/react-md-editor";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -19,22 +17,30 @@ import { useCategories } from "@/queries/actions/categoryActions";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useCreateBlog } from "@/queries/actions/blogActions";
+import { useUpdateBlog, useGetBlogById } from "@/queries/actions/blogActions";
 import { Keyword } from "@/types/keywords-types";
 import { convertToBase64 } from "@/utils/convertToBase64";
+import Image from "next/image";
 
-interface BlogForm {
+interface EditBlogForm {
   root: BlogRootSettings;
   sections: BlogSection[];
 }
 
-const BlogEditor = () => {
+interface EditBlogProps {
+  blogId: string;
+}
+
+const EditBlog: React.FC<EditBlogProps> = ({ blogId }) => {
   const { data: keywords = [] } = useKeywords();
   const { data: categories = [] } = useCategories();
+  const { data: blog, isLoading: isBlogLoading } = useGetBlogById(blogId) as any;
+  const updateBlog = useUpdateBlog();
   const [openTagsDropdown, setOpenTagsDropdown] = useState(false);
-  const createBlog = useCreateBlog();
+  const [loading, setLoading] = useState(false);
+  const [existingCoverImage, setExistingCoverImage] = useState<string | null>(null);
 
-  const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<BlogForm>({
+  const { register, control, handleSubmit, watch, setValue, getValues, reset } = useForm<EditBlogForm>({
     defaultValues: {
       root: {
         title: "",
@@ -43,12 +49,7 @@ const BlogEditor = () => {
         category: "",
         tags: [],
       },
-      sections: [
-        {
-          markdown: "",
-          blocks: [],
-        },
-      ],
+      sections: [],
     },
   });
 
@@ -62,31 +63,55 @@ const BlogEditor = () => {
     name: "sections",
   });
 
-  const [loading, setLoading] = useState(false);
+  // Load blog data as default values
+  useEffect(() => {
+    if (!blog || categories.length === 0) return;
 
-  const onSubmit = async (data: BlogForm) => {
+    const root = blog.root;
+
+    if (root?.coverImage) {
+      setExistingCoverImage(root.coverImage);
+    }
+
+    reset({
+      root: {
+        title: root.title ?? "",
+        slug: root.slug ?? "",
+        descriptions: root.descriptions ?? "",
+        category: root.category ?? "",
+        tags: root.tags ?? [],
+      },
+      sections: blog.sections ?? [],
+    });
+  }, [blog, categories, reset]);
+
+  const onSubmit = async (data: EditBlogForm) => {
     setLoading(true);
     try {
-      // Handle cover image upload
-      let coverImageBase64: string | undefined = undefined;
-      if (data.root.coverImage && data.root.coverImage[0]) {
-        coverImageBase64 = await convertToBase64(data.root.coverImage[0] as File);
+      // Handle cover image upload if new file selected
+      let coverImageToSend: string | undefined = existingCoverImage || undefined;
+
+      const fileInput = getValues("root.coverImage");
+      //@ts-ignore
+      if (fileInput && fileInput?.length > 0) {
+        //@ts-ignore
+        const file = fileInput[0];
+        coverImageToSend = await convertToBase64(file as File);
       }
 
       const payload = {
-        ...data,
         root: {
           ...data.root,
-          coverImage: coverImageBase64 ? [coverImageBase64] : [],
+          coverImage: coverImageToSend,
         },
+        sections: data.sections,
       };
 
-      await createBlog.mutateAsync(payload);
-      reset();
-      toast.success("Blog post successfully");
+      await updateBlog.mutateAsync({ id: blogId, data: payload });
+      toast.success("Blog updated successfully");
     } catch (err) {
-      console.log(err);
-      toast.error("Blog post failed.");
+      console.error(err);
+      toast.error("Failed to update blog");
     } finally {
       setLoading(false);
     }
@@ -122,11 +147,13 @@ const BlogEditor = () => {
 
   const selectedTags = watch("root.tags");
 
+  if (isBlogLoading) return <div className='text-center mt-20'>Loading...</div>;
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='grid grid-cols-3 gap-6'>
       <Card>
         <CardHeader>
-          <CardTitle>Blog Settings</CardTitle>
+          <CardTitle>Edit Blog</CardTitle>
         </CardHeader>
         <CardContent className='space-y-4'>
           {/* Title */}
@@ -150,36 +177,50 @@ const BlogEditor = () => {
           {/* Cover Image */}
           <div>
             <Label>Cover Image</Label>
+            {existingCoverImage && (
+              <div className='mb-2'>
+                <Image width={800} height={500} src={existingCoverImage} alt='Current Cover' className='h-40 w-full object-cover rounded' />
+                <p className='text-sm text-gray-500 mt-1'>Current cover image</p>
+              </div>
+            )}
             <div className='flex items-center gap-2'>
               <Input type='file' accept='image/*' {...register("root.coverImage")} />
               <Upload className='w-4 h-4' />
             </div>
+            <p className='text-xs text-gray-500 mt-1'>Upload a new image to replace the current one</p>
           </div>
 
-          {/* Category Select */}
+          {/* Category */}
           <div>
             <Label>Category</Label>
-            <Select value={watch("root.category")} onValueChange={(value) => setValue("root.category", value)}>
-              <SelectTrigger className='w-full'>
-                <SelectValue placeholder='Select category' />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.title}>
-                    {cat.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Controller
+              name='root.category'
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value || ""} onValueChange={field.onChange}>
+                  <SelectTrigger className='w-full'>
+                    <SelectValue placeholder='Select category' />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.title}>
+                        {cat.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
           </div>
 
-          {/* Tags Multi-Select Dropdown */}
+          {/* Tags */}
           <div>
             <Label>Tags</Label>
             <Popover open={openTagsDropdown} onOpenChange={setOpenTagsDropdown}>
               <PopoverTrigger asChild>
-                <Button variant='outline' role='combobox' className='w-full justify-between'>
-                  {selectedTags.length > 0 ? `${selectedTags.length} tag(s) selected` : "Select tags"}
+                <Button type='button' variant='outline' role='combobox' className='w-full justify-between'>
+                  {selectedTags?.length > 0 ? `${selectedTags.length} tag(s) selected` : "Select tags"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className='w-full p-0' align='start'>
@@ -188,7 +229,7 @@ const BlogEditor = () => {
                   <CommandEmpty>No tags found.</CommandEmpty>
                   <CommandGroup className='max-h-64 overflow-auto'>
                     {keywords.map((keyword: Keyword) => {
-                      const isSelected = selectedTags.includes(keyword.title);
+                      const isSelected = selectedTags?.includes(keyword.title);
                       return (
                         <CommandItem key={keyword.id} onSelect={() => toggleTag(keyword.title)}>
                           <div
@@ -207,9 +248,8 @@ const BlogEditor = () => {
               </PopoverContent>
             </Popover>
 
-            {/* Selected Tags Display */}
             <div className='flex flex-wrap gap-2 mt-2'>
-              {selectedTags.map((tag) => (
+              {selectedTags?.map((tag) => (
                 <Badge key={tag} variant='secondary' className='gap-1'>
                   {tag}
                   <button type='button' onClick={() => removeTag(tag)} className='ml-1 hover:text-destructive'>
@@ -222,7 +262,7 @@ const BlogEditor = () => {
         </CardContent>
       </Card>
 
-      {/* RIGHT: SECTIONS */}
+      {/* Sections */}
       <div className='col-span-2 space-y-6'>
         {sectionFields.map((section, index) => (
           <Card key={section.id}>
@@ -310,12 +350,12 @@ const BlogEditor = () => {
           Add New Section
         </Button>
 
-        <Button disabled={loading} className='w-full' type='submit'>
-          {loading ? "loading..." : "Save Blog"}
+        <Button disabled={loading} className='w-full mt-4' type='submit'>
+          {loading ? "Updating..." : "Update Blog"}
         </Button>
       </div>
     </form>
   );
 };
 
-export default BlogEditor;
+export default EditBlog;

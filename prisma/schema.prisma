@@ -19,17 +19,10 @@ model Post {
   reactions    Reaction[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  sections     Section[]
+  readTime     Int
   userId       String?
+  content      String
   category     String
-}
-
-model Section {
-  id       String  @id @default(cuid())
-  postId   String
-  post     Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  markdown String
-  blocks   Block[]
 }
 
 model Category {
@@ -39,14 +32,6 @@ model Category {
   createdAt DateTime @default(now())
   status    Status   @default(pending)
   updatedAt DateTime @updatedAt
-}
-
-model Block {
-  id        String    @id @default(cuid())
-  type      BlockType
-  content   String?
-  sectionId String
-  section   Section   @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 }
 
 enum BlockType {

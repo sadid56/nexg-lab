@@ -14,43 +14,13 @@ export async function GET(request: NextRequest, { params }: RouteParams<"id">) {
 
     const blog = await prisma.post.findUnique({
       where: { id },
-      include: {
-        sections: {
-          include: {
-            blocks: true,
-          },
-        },
-      },
     });
 
     if (!blog) {
       return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
-    /**
-     * Shape response to match BlogEditor defaultValues
-     */
-    const response = {
-      root: {
-        id: blog.id,
-        title: blog.title,
-        slug: blog.slug,
-        descriptions: blog.descriptions,
-        category: blog.category,
-        tags: blog.tags ?? [],
-        status: blog.status,
-        coverImage: blog.coverImage,
-      },
-      sections: blog.sections.map((section) => ({
-        markdown: section.markdown,
-        blocks: section.blocks.map((block) => ({
-          type: block.type.toLowerCase(), // INFO -> info
-          content: block.content,
-        })),
-      })),
-    };
-
-    return NextResponse.json(response, { status: 200 });
+    return NextResponse.json(blog, { status: 200 });
   } catch (error) {
     console.error("GET BLOG ERROR:", error);
     return NextResponse.json({ error: "Failed to fetch blog" }, { status: 500 });
@@ -77,9 +47,6 @@ export async function DELETE(request: NextRequest, { params }: RouteParams<"id">
     // Delete the blog post from DB
     await prisma.post.delete({
       where: { id },
-      include: {
-        sections: true,
-      },
     });
 
     return NextResponse.json({ message: "Post deleted successfully" });
@@ -91,12 +58,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams<"id">
 
 export async function PUT(request: NextRequest, { params }: RouteParams<"id">) {
   try {
-    const body = await request.json();
-    const { root, sections } = body;
+    const data = await request.json();
     const { id } = await params;
 
     // Validate required fields
-    if (!root?.title || !root?.slug || !root?.descriptions || !root?.category) {
+    if (!data?.title || !data?.slug || !data?.descriptions || !data?.category) {
       return NextResponse.json({ error: "Missing required fields: title, slug, descriptions, category" }, { status: 400 });
     }
 
@@ -113,14 +79,14 @@ export async function PUT(request: NextRequest, { params }: RouteParams<"id">) {
     let coverImageUrl = existingBlog.coverImage;
 
     // Handle cover image update
-    if (root.coverImage) {
-      const isOldImage = root.coverImage.startsWith("https");
+    if (data.coverImage) {
+      const isOldImage = data.coverImage.startsWith("https");
 
       if (!isOldImage) {
         // Delete old image from Cloudinary if it exists
         if (existingBlog.coverImage) {
           try {
-            await deleteFromCloudinary(root.coverImage);
+            await deleteFromCloudinary(data.coverImage);
           } catch (deleteError) {
             console.error("Error deleting old image:", deleteError);
             // Continue even if delete fails
@@ -128,51 +94,27 @@ export async function PUT(request: NextRequest, { params }: RouteParams<"id">) {
         }
 
         // Upload new image
-        coverImageUrl = await uploadToCloudinary(root.coverImage, {
+        coverImageUrl = await uploadToCloudinary(data.coverImage, {
           folder: "blogs/thumbnails",
-          publicId: generateSlug(root.title),
+          publicId: generateSlug(data.title),
         });
       }
       // If it's an existing URL, keep it as is
     }
 
-    // Delete existing sections and blocks (cascade delete)
-    await prisma.section.deleteMany({
-      where: { postId: id },
-    });
-
     // Update post with new sections and blocks
     const result = await prisma.post.update({
       where: { id: id },
       data: {
-        title: root.title,
-        slug: generateSlug(root.slug),
-        tags: root.tags || [],
+        title: data.title,
+        slug: generateSlug(data.slug),
+        tags: data.tags || [],
         coverImage: coverImageUrl,
-        descriptions: root.descriptions,
-        category: root.category,
-        sections: {
-          create:
-            sections?.map((section: any) => ({
-              markdown: section.markdown,
-              ...(section.blocks &&
-                section.blocks.length > 0 && {
-                  blocks: {
-                    create: section.blocks.map((block: any) => ({
-                      type: block.type.toUpperCase() as any,
-                      content: block.content,
-                    })),
-                  },
-                }),
-            })) || [],
-        },
-      },
-      include: {
-        sections: {
-          include: {
-            blocks: true,
-          },
-        },
+        descriptions: data.descriptions,
+        category: data.category,
+        content: data?.content,
+        readTime: data?.readTime,
+        updatedAt: new Date(),
       },
     });
 

@@ -25,3 +25,18 @@ export interface BlogSection {
   markdown: string;
   blocks: SectionBlock[];
 }
+
+export type TBlog = {
+  id: string;
+  title: string;
+  slug: string;
+  tags: string[];
+  coverImage?: string | null;
+  descriptions: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  category: string;
+  content: string;
+  userId?: string;
+  readTime?: string;
+};

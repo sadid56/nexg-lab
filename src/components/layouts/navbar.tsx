@@ -7,13 +7,14 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { ModeToggle } from "../global/ModeToggle";
+import Container from "../global/Container";
 
 export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
 
   return (
-    <nav className='w-full border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 lg:px-8'>
-      <div className='max-w-[1352px] mx-auto flex justify-between items-center h-16'>
+    <nav className='w-full border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 lg:px-8 fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900'>
+      <Container className=' flex justify-between items-center h-16'>
         {/* Left side - Website Name */}
         <Link href='/' className='text-xl font-bold text-gray-900 dark:text-white'>
           NexG Lab
@@ -37,7 +38,7 @@ export default function Navbar() {
 
           {/* GitHub Button */}
           <Button asChild variant='outline' size='sm' className='px-3 py-1'>
-            <a href='https://github.com/yourusername' target='_blank' rel='noopener noreferrer'>
+            <a href='https://github.com/sadid56' target='_blank' rel='noopener noreferrer'>
               GitHub
             </a>
           </Button>
@@ -47,7 +48,7 @@ export default function Navbar() {
             Login
           </Button>
         </div>
-      </div>
+      </Container>
     </nav>
   );
 }

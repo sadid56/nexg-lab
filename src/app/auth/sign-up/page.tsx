@@ -54,7 +54,7 @@ function SignUpContent() {
     });
 
     if (error) {
-      setErrorMsg(error.message);
+      setErrorMsg("err");
     } else {
       setVerifyOpen(true);
     }
@@ -155,9 +155,7 @@ function SignUpContent() {
             <Button variant='outline' onClick={() => setVerifyOpen(false)}>
               Close
             </Button>
-            <Button loading={resending} onClick={resendVerification}>
-              Resend email
-            </Button>
+            <Button onClick={resendVerification}>Resend email</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

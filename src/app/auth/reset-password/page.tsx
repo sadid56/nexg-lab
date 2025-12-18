@@ -1,17 +1,14 @@
-import { GetBlogs } from "@/actions/blog-actions";
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-import BlogCard from "./_components/BlogCard";
-import { TBlog } from "@/types/blog-types";
 import { Metadata } from "next";
+import ResetPasswordContent from "../_components/ResetPasswordContent";
 
 export const metadata: Metadata = {
   title: {
-    default: "NexG Lab — Modern software architecture",
+    default: "NexG Lab — Reset Password",
     template: "%s | NexG Lab Blog",
   },
 
   description:
-    "NexG Lab Blog shares practical tutorials, deep dives, and real-world insights on web development, Linux, and modern software architecture.",
+    "NexG Lab Blog shares practical tutorials, deep dives, and real-world insights on web development, JavaScript, React, Next.js, backend engineering, and modern software architecture.",
 
   keywords: [
     "web development blog",
@@ -37,7 +34,7 @@ export const metadata: Metadata = {
     title: "NexG Lab Blog — Web Development & Engineering",
     description: "Practical tutorials and engineering insights on React, Next.js, JavaScript, backend systems, and modern web development.",
     url: process.env.BETTER_AUTH_URL,
-    siteName: "NexG Lab",
+    siteName: "NexG Lab Blog",
     type: "website",
   },
 
@@ -57,20 +54,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Home() {
-  const queryClient = new QueryClient();
-
-  const blogs: TBlog[] = await queryClient.fetchQuery({
-    queryKey: ["blogs"],
-    queryFn: () => GetBlogs(),
-    staleTime: 15 * 60 * 1000,
-  });
-
+const ResetPasswordPage = () => {
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      {blogs?.map((blog: TBlog) => (
-        <BlogCard post={blog} key={blog?.id} />
-      ))}
-    </HydrationBoundary>
+    <div>
+      <ResetPasswordContent />
+    </div>
   );
-}
+};
+
+export default ResetPasswordPage;

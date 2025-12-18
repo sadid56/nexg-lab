@@ -7,7 +7,7 @@ export async function proxy(request: NextRequest) {
   if (pathname.startsWith("/api/auth")) return NextResponse.next();
   if (pathname.startsWith("/_next/") || pathname.includes(".")) return NextResponse.next();
 
-  const publicRoutes = ["/", "/auth/sign-in", "/auth/sign-up"];
+  const publicRoutes = ["/", "/auth/sign-in", "/auth/sign-up", "/auth", "/read", "/read/[slug]", "/auth/reset-password"];
 
   const isPublicRoute = publicRoutes.some(
     (route) => pathname === route || (route !== "/" && pathname.startsWith(route + "/")) || pathname === "/"

@@ -6,7 +6,7 @@ const EditBlogPage = async ({ params }: RouteParams<"id">) => {
   const { id } = await params;
   return (
     <Suspense>
-      <EditBlog blogId={id} />
+      <EditBlog id={id} />
     </Suspense>
   );
 };

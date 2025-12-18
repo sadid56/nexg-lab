@@ -1,58 +1,36 @@
-import { deleteFromCloudinary, uploadToCloudinary } from "@/lib/cloudinary";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 import prisma from "@/lib/prisma";
-import { RouteParams } from "@/types/next";
 import { generateSlug } from "@/utils/generateSlug";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { root, sections } = body;
+    const data = await request.json();
 
     // Validate required fields
-    if (!root?.title || !root?.slug || !root?.descriptions || !root?.category) {
+    if (!data?.title || !data?.slug || !data?.descriptions || !data?.category) {
       return NextResponse.json({ error: "Missing required fields: title, slug, descriptions, category" }, { status: 400 });
     }
 
     let coverImageUrl = "";
-    if (root.coverImage && root.coverImage[0]) {
-      coverImageUrl = await uploadToCloudinary(root.coverImage[0], {
+    if (data.coverImage && data.coverImage) {
+      coverImageUrl = await uploadToCloudinary(data.coverImage, {
         folder: "blogs/thumbnails",
-        publicId: generateSlug(root.title),
+        publicId: generateSlug(data.title),
       });
     }
 
     // Create post with nested sections and blocks
     const result = await prisma.post.create({
       data: {
-        title: root.title,
-        slug: generateSlug(root.slug),
-        tags: root.tags || [],
+        title: data.title,
+        slug: generateSlug(data.slug),
+        tags: data.tags || [],
         coverImage: coverImageUrl,
-        descriptions: root.descriptions,
-        category: root.category,
-        sections: {
-          create:
-            sections?.map((section: any) => ({
-              markdown: section.markdown,
-              ...(section.blocks &&
-                section.blocks.length > 0 && {
-                  blocks: {
-                    create: section.blocks.map((block: any) => ({
-                      type: block.type.toUpperCase() as any,
-                      content: block.content,
-                    })),
-                  },
-                }),
-            })) || [],
-        },
-      },
-      include: {
-        sections: {
-          include: {
-            blocks: true,
-          },
-        },
+        descriptions: data.descriptions,
+        category: data.category,
+        readTime: data?.readTime,
+        content: data?.content,
       },
     });
 
@@ -68,13 +46,6 @@ export async function GET() {
     const blogs = await prisma.post.findMany({
       orderBy: {
         createdAt: "desc",
-      },
-      include: {
-        sections: {
-          include: {
-            blocks: true,
-          },
-        },
       },
     });
 

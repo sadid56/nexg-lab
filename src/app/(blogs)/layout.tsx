@@ -5,15 +5,15 @@ import React, { ReactNode } from "react";
 
 const BlogsLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <main>
+    <main className='bg-gray-50 dark:bg-[#0b0700]'>
       <Navbar />
-      <Container className='pt-20 relative flex'>
-        {/* Left: Main Content */}
-        <div className='flex-1 pr-8'>{children}</div>
+      <Container className=' relative flex'>
+        <div className='flex-1 md:pr-5 pt-[70px] md:pt-20'>{children}</div>
 
-        {/* Right: Fixed Sidebar */}
-        <div className='hidden lg:block w-[300px]'>
-          <div className='sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto'>
+        <div className='hidden lg:block w-[350px] border-l-2 dark:border-hidden border-gray-200 min-h-screen relative'>
+          <div className='absolute dark:block hidden left-0 top-0 h-full w-[2px] bg-gradient-to-b from-transparent via-orange-200 dark:via-orange-900 to-transparent' />
+
+          <div className='sticky top-0 pb-5 overflow-y-auto pl-4'>
             <RightSidebar />
           </div>
         </div>

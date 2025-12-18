@@ -1,26 +1,19 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ArrowRight } from "lucide-react";
 import { TBlog } from "@/types/blog-types";
-import { BLUR_DATA_URL } from "@/constants/url";
 
 export default function BlogCardHorizontal({ post }: { post: TBlog }) {
   return (
-    <Card className='group relative rounded-3xl border-2 border-gray-200  transition-all duration-500 overflow-hidden backdrop-blur-sm p-0 shadow-none'>
+    <Card className='group relative rounded-3xl border-2 border-gray-200 dark:border-gray-800  transition-all duration-500 overflow-hidden backdrop-blur-sm p-0 shadow-none w-full'>
       <div className='relative flex flex-col md:flex-row'>
         {/* Left: Image with overlay effects */}
         {post.coverImage && (
           <div className='relative w-full md:w-2/5 aspect-video flex-shrink-0 overflow-hidden'>
-            <Image
+            <img
               src={post.coverImage}
               alt={post.title}
-              width={600}
-              height={500}
-              loading='lazy'
-              placeholder='blur'
-              blurDataURL={BLUR_DATA_URL}
               className='transition-transform duration-700 group-hover:scale-110 will-change-transform'
             />
 

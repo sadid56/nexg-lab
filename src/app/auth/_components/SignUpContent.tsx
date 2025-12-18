@@ -16,7 +16,7 @@ import SocialAuth from "./SocialAuth";
 
 export default function SignUpContent() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
+  const callbackUrl = searchParams?.get("callbackUrl") || "/";
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -143,7 +143,7 @@ export default function SignUpContent() {
 
                 <Button
                   type='submit'
-                  className='w-full h-11 cursor-pointer text-white shadow-lg hover:shadow-xl transition-all duration-200'
+                  className='w-full h-11 cursor-pointer text-white shadow-lg hover:shadow-xl transition-all duration-200 bg-amber-500 hover:bg-amber-600'
                   disabled={loading}
                 >
                   {loading ? (

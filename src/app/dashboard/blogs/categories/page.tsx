@@ -102,7 +102,7 @@ export default function CategoryTable() {
       {/* Header & New Category Button */}
       <div className='flex justify-between items-center'>
         <div>
-          <h1 className='text-3xl font-bold tracking-tight'>Categories</h1>
+          <h1 className='text-2xl md:text-3xl font-bold tracking-tight'>Categories</h1>
           <p className='text-muted-foreground'>Manage your product categories</p>
         </div>
 

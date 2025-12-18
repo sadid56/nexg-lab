@@ -8,7 +8,7 @@ interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
 
 const Container = ({ children, className, ...rest }: ContainerProps) => {
   return (
-    <div {...rest} className={cn(className, "max-w-[1352px] px-4 mx-auto")}>
+    <div {...rest} className={cn(className, "max-w-[1380px] px-4 mx-auto")}>
       {children}
     </div>
   );

@@ -44,5 +44,6 @@ export const GetCurrentUser = async () => {
     return user;
   } catch {
     console.log("Failed to fetch current user");
+    return null;
   }
 };

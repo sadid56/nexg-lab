@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import SignUpContent from "../_components/SignUpContent";
 import { Metadata } from "next";
+import GlobalLoading from "@/components/ui/global-loading";
 
 export const metadata: Metadata = {
   title: {
@@ -57,7 +58,7 @@ export const metadata: Metadata = {
 
 export default function SignUpPage() {
   return (
-    <Suspense fallback={<div className='h-screen grid place-items-center'>Loading…</div>}>
+    <Suspense fallback={<GlobalLoading />}>
       <SignUpContent />
     </Suspense>
   );

@@ -2,16 +2,40 @@
 
 import prisma from "@/lib/prisma";
 
-export const GetBlogs = async () => {
+export const GetBlogs = async (category?: string, search?: string) => {
   try {
-    const result = await prisma.post.findMany({
+    const blogs = await prisma.post.findMany({
       where: {
         status: "active",
+
+        ...(category && {
+          category: {
+            equals: category,
+            mode: "insensitive",
+          },
+        }),
+
+        ...(search && {
+          OR: [
+            {
+              title: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          ],
+        }),
+      },
+
+      orderBy: {
+        createdAt: "desc",
       },
     });
-    return result;
-  } catch (err) {
-    console.log(err);
+
+    return blogs;
+  } catch (error) {
+    console.error("GetBlogs error:", error);
+    return [];
   }
 };
 
@@ -56,5 +80,38 @@ export const GetBlogDetailsMetaData = async (slug: string) => {
     return result;
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const GetRecentBlog = async () => {
+  try {
+    const result = await prisma.post.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        readTime: true,
+      },
+    });
+    return result;
+  } catch {
+    console.log("Failed to get recent blog");
+  }
+};
+
+export const GetHomeCategory = async () => {
+  try {
+    const result = await prisma.category.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return result;
+  } catch {
+    console.log("Failed to get recent blog");
   }
 };

@@ -50,13 +50,16 @@
     "react-hook-form": "^7.68.0",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
+    "remove": "^0.1.5",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
     "ua-parser-js": "^2.0.7",
+    "vaul": "^1.1.2",
     "zod": "^4.1.13"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/geoip-lite": "^1.4.4",
     "@types/node": "^20",
     "@types/nodemailer": "^7.0.4",
     "@types/pg": "^8.15.6",

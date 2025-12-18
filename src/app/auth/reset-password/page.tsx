@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import ResetPasswordContent from "../_components/ResetPasswordContent";
+import { Suspense } from "react";
+import GlobalLoading from "@/components/ui/global-loading";
 
 export const metadata: Metadata = {
   title: {
@@ -56,9 +58,9 @@ export const metadata: Metadata = {
 
 const ResetPasswordPage = () => {
   return (
-    <div>
+    <Suspense fallback={<GlobalLoading />}>
       <ResetPasswordContent />
-    </div>
+    </Suspense>
   );
 };
 

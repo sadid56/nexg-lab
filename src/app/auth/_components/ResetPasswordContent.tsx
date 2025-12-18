@@ -33,6 +33,7 @@ const ResetPasswordContent: React.FC = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const router = useRouter();
+  const callbackUrl = searchParams?.get("callbackUrl") || "/";
 
   const emailForm = useForm<EmailForm>({
     resolver: zodResolver(emailSchema),
@@ -66,7 +67,7 @@ const ResetPasswordContent: React.FC = () => {
 
         await authClient.requestPasswordReset({
           email: (values as EmailForm).email,
-          redirectTo: "/auth/reset-password",
+          redirectTo: `/auth/reset-password?callbackUrl=${encodeURIComponent(callbackUrl)}`,
         });
 
         toast.success("Reset link sent to your email");
@@ -82,7 +83,7 @@ const ResetPasswordContent: React.FC = () => {
       if (data?.status) {
         toast.success("Password reset successful");
         reset();
-        router.push("/auth/sign-in");
+        router.push(`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`);
       }
     } catch (err) {
       toast.error("Something went wrong");
@@ -131,7 +132,10 @@ const ResetPasswordContent: React.FC = () => {
             </Button>
             <h5 className='text-sm text-center'>
               Remember Password ?{" "}
-              <Link className='hover:underline text-blue-400 font-medium' href={"/auth/sign-in"}>
+              <Link
+                className='hover:underline text-blue-400 font-medium'
+                href={`/auth/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+              >
                 Back to sign-in
               </Link>
             </h5>

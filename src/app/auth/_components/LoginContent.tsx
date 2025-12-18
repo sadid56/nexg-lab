@@ -15,7 +15,7 @@ import SocialAuth from "./SocialAuth";
 
 export default function LoginContent() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams?.get("callbackUrl") || "/dashboard";
+  const callbackUrl = searchParams?.get("callbackUrl") || "/";
   // const error = searchParams?.get("error");
 
   const [loading, setLoading] = useState(false);
@@ -100,7 +100,10 @@ export default function LoginContent() {
                     <Label htmlFor='password' className='text-gray-700 dark:text-gray-300'>
                       Password
                     </Label>
-                    <Link href='/auth/reset-password' className='text-sm text-blue-600 dark:text-blue-400 hover:underline'>
+                    <Link
+                      href={`/auth/reset-password?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+                      className='text-sm text-blue-600 dark:text-blue-400 hover:underline'
+                    >
                       Forgot password?
                     </Link>
                   </div>
@@ -130,7 +133,7 @@ export default function LoginContent() {
 
                 <Button
                   type='submit'
-                  className='w-full h-11 cursor-pointer text-white shadow-lg hover:shadow-xl transition-all duration-200'
+                  className='w-full bg-amber-500 hover:bg-amber-600 h-11 cursor-pointer text-white shadow-lg hover:shadow-xl transition-all duration-200'
                   disabled={loading}
                 >
                   {loading ? (

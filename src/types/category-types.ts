@@ -4,6 +4,6 @@ export interface Category {
   id: string;
   title: string;
   slug: string;
-  createdAt: string;
+  createdAt: string | Date;
   status: Status;
 }

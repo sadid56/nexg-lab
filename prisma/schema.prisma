@@ -16,7 +16,6 @@ model Post {
   descriptions String
   status       Status     @default(pending)
   feedbacks    Feedback[]
-  reactions    Reaction[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   readTime     Int
@@ -43,11 +42,13 @@ enum BlockType {
 
 model Feedback {
   id        String   @id @default(cuid())
-  message   String
-  userId    String
+  feedback  String?
+  anonymous Boolean
+  emoji     String
+  userId    String?
   postId    String
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
 }
 
@@ -57,18 +58,6 @@ model Keywords {
   title     String
   createdAt DateTime  @default(now())
   updatedAt DateTime?
-}
-
-model Reaction {
-  id        String   @id @default(cuid())
-  emoji     String
-  userId    String
-  postId    String
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-
-  @@unique([postId, userId, emoji])
 }
 
 model account {
@@ -121,7 +110,6 @@ model User {
   banned        Boolean    @default(false)
   banReason     String?
   feedbacks     Feedback[]
-  reactions     Reaction[]
   accounts      account[]
   sessions      session[]
 }

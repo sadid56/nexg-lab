@@ -123,7 +123,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData, onSubmit, submitText =
   );
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className='grid grid-cols-3 gap-6'>
+    <form onSubmit={handleSubmit(handleFormSubmit)} className='grid lg:grid-cols-3 gap-6 overflow-y-scroll'>
       {/* LEFT */}
       <Card>
         <CardHeader>
@@ -222,7 +222,7 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData, onSubmit, submitText =
       </Card>
 
       {/* RIGHT */}
-      <div className='col-span-2 space-y-4'>
+      <div className='lg:col-span-2 space-y-4'>
         <Card>
           <CardHeader>
             <CardTitle>Markdown Content</CardTitle>

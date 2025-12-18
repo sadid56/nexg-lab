@@ -51,23 +51,23 @@ const CodeBlock = ({ className, children }: any) => {
 export const markdownComponents = {
   h1: ({ ...props }: any) => (
     <h1
-      className='text-4xl md:text-5xl font-bold mt-12 mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent leading-tight'
+      className='text-3xl md:text-5xl font-bold mt-12 mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent leading-tight'
       {...props}
     />
   ),
 
   h2: ({ ...props }: any) => (
     <h2
-      className='text-3xl md:text-4xl font-bold mt-10 mb-5 pb-3 border-b-2 border-gradient-to-r from-primary/50 to-transparent'
+      className='text-2xl md:text-4xl font-bold mt-10 mb-5 pb-3 border-b-2 border-gradient-to-r from-primary/50 to-transparent'
       {...props}
     />
   ),
 
-  h3: ({ ...props }: any) => <h3 className='text-2xl md:text-3xl font-semibold mt-8 mb-4 text-foreground/90' {...props} />,
+  h3: ({ ...props }: any) => <h3 className='text-xl md:text-3xl font-semibold mt-8 mb-4 text-foreground/90' {...props} />,
 
-  h4: ({ ...props }: any) => <h4 className='text-xl md:text-2xl font-semibold mt-6 mb-3 text-foreground/80' {...props} />,
+  h4: ({ ...props }: any) => <h4 className='text-lg md:text-2xl font-semibold mt-6 mb-3 text-foreground/80' {...props} />,
 
-  h5: ({ ...props }: any) => <h5 className='text-lg md:text-xl font-semibold mt-5 mb-2 text-foreground/75' {...props} />,
+  h5: ({ ...props }: any) => <h5 className='text-xs md:text-xl font-semibold mt-5 mb-2 text-foreground/75' {...props} />,
 
   h6: ({ ...props }: any) => <h6 className='text-base md:text-lg font-semibold mt-4 mb-2 text-foreground/70' {...props} />,
 

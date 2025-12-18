@@ -1,10 +1,9 @@
-import { Suspense } from "react";
-import SignUpContent from "../_components/SignUpContent";
 import { Metadata } from "next";
+import ResetPasswordContent from "../_components/ResetPasswordContent";
 
 export const metadata: Metadata = {
   title: {
-    default: "NexG Lab — Sign up",
+    default: "NexG Lab — Reset Password",
     template: "%s | NexG Lab Blog",
   },
 
@@ -55,10 +54,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function SignUpPage() {
+const ResetPasswordPage = () => {
   return (
-    <Suspense fallback={<div className='h-screen grid place-items-center'>Loading…</div>}>
-      <SignUpContent />
-    </Suspense>
+    <div>
+      <ResetPasswordContent />
+    </div>
   );
-}
+};
+
+export default ResetPasswordPage;

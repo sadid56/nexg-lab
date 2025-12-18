@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ArrowRight } from "lucide-react";
 import { TBlog } from "@/types/blog-types";
+import { BLUR_DATA_URL } from "@/constants/url";
 
 export default function BlogCardHorizontal({ post }: { post: TBlog }) {
   return (
@@ -11,12 +12,16 @@ export default function BlogCardHorizontal({ post }: { post: TBlog }) {
       <div className='relative flex flex-col md:flex-row'>
         {/* Left: Image with overlay effects */}
         {post.coverImage && (
-          <div className='relative w-full md:w-2/5 aspect-video md:aspect-auto flex-shrink-0 overflow-hidden'>
+          <div className='relative w-full md:w-2/5 aspect-video flex-shrink-0 overflow-hidden'>
             <Image
               src={post.coverImage}
               alt={post.title}
-              fill
-              className='object-cover transition-transform duration-700 group-hover:scale-110'
+              width={600}
+              height={500}
+              loading='lazy'
+              placeholder='blur'
+              blurDataURL={BLUR_DATA_URL}
+              className='transition-transform duration-700 group-hover:scale-110 will-change-transform'
             />
 
             {/* Category badge floating on image */}

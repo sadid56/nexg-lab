@@ -38,3 +38,23 @@ export const GetBlogDetails = async (slug: string) => {
     console.log(err);
   }
 };
+
+export const GetBlogDetailsMetaData = async (slug: string) => {
+  try {
+    const result = await prisma.post.findUnique({
+      where: {
+        slug,
+        status: "active",
+      },
+      select: {
+        title: true,
+        coverImage: true,
+        slug: true,
+        descriptions: true,
+      },
+    });
+    return result;
+  } catch (err) {
+    console.log(err);
+  }
+};

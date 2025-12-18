@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import ResetPasswordContent from "../_components/ResetPasswordContent";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: {
@@ -56,9 +57,18 @@ export const metadata: Metadata = {
 
 const ResetPasswordPage = () => {
   return (
-    <div>
+    <Suspense
+      fallback={
+        <div className='min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950'>
+          <div className='animate-pulse flex flex-col items-center'>
+            <div className='h-12 w-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 mb-4' />
+            <div className='h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded'></div>
+          </div>
+        </div>
+      }
+    >
       <ResetPasswordContent />
-    </div>
+    </Suspense>
   );
 };
 

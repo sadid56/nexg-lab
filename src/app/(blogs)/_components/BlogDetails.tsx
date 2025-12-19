@@ -27,7 +27,7 @@ type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 const BlogDetails = ({ blog }: { blog: TBlog }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useCurrentUser();
+  const { user } = useCurrentUser({});
 
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,6 +70,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
       form.reset();
       setShowSignInModal(false);
     } catch (error) {
+      console.log(error);
       toast.error("Failed to submit feedback. Please try again.");
     } finally {
       setIsLoading(false);

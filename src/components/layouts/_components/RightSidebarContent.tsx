@@ -4,16 +4,14 @@ import Link from "next/link";
 import { Clock, Hash, Share2, Copy } from "lucide-react";
 import { useState } from "react";
 
-// Shadcn UI Components (Make sure these are installed in your project)
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Keyword } from "@/types/keywords-types";
 import { TBlog } from "@/types/blog-types";
-import { Category } from "@/types/category-types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { POPULAR_TOPICS } from "@/constants/common";
 
 // --------------------
 // Section Header Component
@@ -173,7 +171,7 @@ function ShareCTA() {
 // --------------------
 // Right Sidebar Component
 // --------------------
-export default function RightSidebarContent({ category, recentPosts }: { category: Category[]; recentPosts: TBlog[] }) {
+export default function RightSidebarContent({ recentPosts }: { recentPosts: TBlog[] }) {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -220,7 +218,7 @@ export default function RightSidebarContent({ category, recentPosts }: { categor
           )}
         </div>
         <div className='flex flex-wrap gap-2'>
-          {category?.map((tag) => (
+          {POPULAR_TOPICS.map((tag) => (
             <ModernTag key={tag.id} tag={tag} />
           ))}
         </div>
@@ -238,6 +236,7 @@ export default function RightSidebarContent({ category, recentPosts }: { categor
         <div className='flex gap-2'>
           <input
             type='email'
+            defaultValue={""}
             placeholder='Your email'
             className='flex-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 w-[70%] focus:outline-none focus:border-orange-500'
           />

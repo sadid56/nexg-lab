@@ -5,13 +5,20 @@ import BlogDetails from "../../_components/BlogDetails";
 import { notFound } from "next/navigation";
 import { TBlog } from "@/types/blog-types";
 import { getBlog, getBlogMeta } from "@/actions/cached-data";
+import { CACHE_TIME } from "@/constants/common";
+
+export const dynamic = "force-static";
 
 export async function generateStaticParams() {
-  const slugs = await GetAllBlogSlugs();
-
-  return slugs.map((s) => ({
-    slug: s.slug,
-  }));
+  try {
+    const slugs = await GetAllBlogSlugs();
+    return slugs.map((s) => ({
+      slug: s.slug,
+    }));
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: RouteParams<"slug">) {
@@ -25,7 +32,6 @@ export async function generateMetadata({ params }: RouteParams<"slug">) {
   return {
     title: blog.title,
     description: blog.descriptions?.slice(0, 160),
-
     openGraph: {
       title: blog.title,
       description: blog.descriptions,
@@ -40,7 +46,6 @@ export async function generateMetadata({ params }: RouteParams<"slug">) {
         },
       ],
     },
-
     alternates: {
       canonical: `/read/${blog.slug}`,
     },
@@ -54,7 +59,7 @@ const BlogReadPage = async ({ params }: RouteParams<"slug">) => {
   const blog: TBlog = await queryClient.fetchQuery({
     queryKey: ["blog", slug],
     queryFn: () => getBlog(slug),
-    staleTime: 15 * 60 * 1000,
+    staleTime: CACHE_TIME[10],
   });
 
   if (!blog) {

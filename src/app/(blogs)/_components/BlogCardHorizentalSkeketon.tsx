@@ -3,10 +3,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function BlogCardHorizontalSkeleton() {
   return (
-    <Card className='relative rounded-3xl border-2 border-gray-200 dark:border-gray-800 overflow-hidden p-0 shadow-none w-full'>
+    <Card className='relative rounded-3xl border-2 border-gray-200 dark:border-gray-800 overflow-hidden p-0 shadow-none w-full lg:h-[320px]'>
       <div className='relative flex flex-col md:flex-row animate-pulse'>
         {/* Left: Image Skeleton */}
-        <div className='relative w-full md:w-2/5 aspect-video flex-shrink-0 overflow-hidden'>
+        <div className='relative w-full md:w-2/5 flex-shrink-0 overflow-hidden'>
           <Skeleton className='h-full w-full rounded-none' />
 
           {/* Category badge skeleton */}
@@ -33,6 +33,7 @@ export function BlogCardHorizontalSkeleton() {
 
             {/* Description */}
             <div className='space-y-2'>
+              <Skeleton className='h-4 w-full rounded-md' />
               <Skeleton className='h-4 w-full rounded-md' />
               <Skeleton className='h-4 w-full rounded-md' />
               <Skeleton className='h-4 w-2/3 rounded-md' />

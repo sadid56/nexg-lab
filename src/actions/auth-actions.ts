@@ -39,6 +39,7 @@ export const GetCurrentUser = async () => {
         email: true,
         image: true,
         name: true,
+        role: true,
       },
     });
     return user;

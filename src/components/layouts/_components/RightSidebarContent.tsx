@@ -12,6 +12,8 @@ import { TBlog } from "@/types/blog-types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { POPULAR_TOPICS } from "@/constants/common";
+import useRecentBlogs from "@/hooks/useRecentBlogs";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // --------------------
 // Section Header Component
@@ -26,6 +28,24 @@ function SectionHeader({ icon, title }: { icon: React.ReactNode; title: string }
     </div>
   );
 }
+
+const BlogItemSkeleton = () => {
+  return (
+    <div className='flex items-start gap-3 p-3 rounded-xl border border-transparent'>
+      <div className='flex-1 min-w-0 space-y-2'>
+        {/* Title skeleton */}
+        <Skeleton className='h-3 w-4/5 rounded-md' />
+        <Skeleton className='h-3 w-1/2 rounded-md' />
+
+        {/* Read time skeleton */}
+        <div className='flex items-center gap-1.5'>
+          <Skeleton className='h-3 w-3 rounded-full' />
+          <Skeleton className='h-3 w-10 rounded-md' />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // --------------------
 // Post Link Component
@@ -171,9 +191,11 @@ function ShareCTA() {
 // --------------------
 // Right Sidebar Component
 // --------------------
-export default function RightSidebarContent({ recentPosts }: { recentPosts: TBlog[] }) {
+export default function RightSidebarContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  const { blogs: recentPosts, isLoading } = useRecentBlogs();
 
   return (
     <aside className='space-y-8 px-4 sticky top-0 pt-20'>
@@ -188,9 +210,19 @@ export default function RightSidebarContent({ recentPosts }: { recentPosts: TBlo
           title='Recent Posts'
         />
         <div className='space-y-1'>
-          {recentPosts?.map((post: TBlog) => (
-            <PostLink key={post.id} post={post} />
-          ))}
+          {isLoading ? (
+            <div>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <BlogItemSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <>
+              {recentPosts?.map((post: any) => (
+                <PostLink key={post.id} post={post} />
+              ))}
+            </>
+          )}
         </div>
       </div>
 

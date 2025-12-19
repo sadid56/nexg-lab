@@ -1,12 +1,27 @@
 import { Input } from "@/components/ui/input";
+import { Kbd, KbdGroup } from "@/components/ui/kbd";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const NavbarSearchBox = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   useEffect(() => {
     if (!isSearching) return;
@@ -26,19 +41,24 @@ const NavbarSearchBox = () => {
     }, 400);
 
     return () => clearTimeout(handler);
-  }, [searchQuery, isSearching, router, searchParams, setIsSearching]);
+  }, [searchQuery, isSearching, router, searchParams]);
 
   return (
-    <div>
+    <div className='relative'>
       <Input
+        ref={inputRef}
         placeholder='Search...'
         value={searchQuery}
         onChange={(e) => {
           setSearchQuery(e.target.value);
           setIsSearching(true);
         }}
-        className='w-64 sm:w-full'
+        className='w-full lg:w-[400px]'
       />
+
+      <KbdGroup className='absolute right-3 top-2'>
+        <Kbd>Ctrl + K</Kbd>
+      </KbdGroup>
     </div>
   );
 };

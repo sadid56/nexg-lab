@@ -3,19 +3,31 @@
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { Layout, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import useSignOut from "@/hooks/useSignOut";
 import Container from "@/components/global/Container";
 import { ModeToggle } from "@/components/global/ModeToggle";
-import { User } from "@/types/users-types";
 import { useOutsideClick } from "@/hooks/useOutSideClick";
-import NavbarSearchBox from "./NavbarSearchBox";
-import NavbarMobileDrawer from "./NavbarMobileDrawer";
+import NavbarSearchBox from "./_components/NavbarSearchBox";
+import NavbarMobileDrawer from "./_components/NavbarMobileDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
+import useCurrentUser from "@/hooks/useCurrentUser";
+import { User } from "@/types/users-types";
+import { IconBrandGithub } from "@tabler/icons-react";
 
-export default function NavbarContent({ user }: { user: User }) {
+const NavbarUserSkeleton = () => {
+  return (
+    <div className='flex items-center gap-2'>
+      <Skeleton className='w-[70px] h-8 rounded-md hidden sm:block' />
+    </div>
+  );
+};
+
+export default function Navbar() {
+  const { user, isLoading } = useCurrentUser({});
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const router = useRouter();
@@ -50,19 +62,19 @@ export default function NavbarContent({ user }: { user: User }) {
             {/* GitHub Button */}
             <Button asChild variant='outline' size='sm' className='px-3 py-1'>
               <a href='https://github.com/sadid56/nexg-lab' target='_blank' rel='noopener noreferrer'>
-                GitHub
+                <IconBrandGithub stroke={2} /> GitHub
               </a>
             </Button>
 
             {/* Conditional User Section */}
-            {user ? (
+            {isLoading ? (
+              <NavbarUserSkeleton />
+            ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant='ghost' className='flex items-center gap-2 rounded-full px-2 py-1'>
-                    <div>
-                      <img src={user.image || ""} className='w-8 h-8 rounded-full' alt={user.name} />
-                    </div>
-                    <span className='hidden sm:block'>{user.name}</span>
+                  <Button variant='ghost' className='flex w-[70px] items-center gap-2 rounded-full px-2 py-1'>
+                    <img src={user.image || ""} className='w-8 h-8 rounded-full' alt={user.name} />
+                    {/* <span className='hidden sm:block'>{user.name.slice(0, 3)}</span> */}
                   </Button>
                 </DropdownMenuTrigger>
 
@@ -73,14 +85,21 @@ export default function NavbarContent({ user }: { user: User }) {
                       <span className='text-sm text-muted-foreground'>{user.email}</span>
                     </div>
                   </DropdownMenuLabel>
+                  {user?.role === "ADMIN" && (
+                    <DropdownMenuItem>
+                      <Layout className='mr-2 h-4 w-4' />
+                      <Link href={"/dashboard"}>Dashboard</Link>
+                    </DropdownMenuItem>
+                  )}
 
                   <DropdownMenuItem onClick={signout}>
-                    <LogOut className='mr-2 h-4 w-4' /> Logout
+                    <LogOut className='mr-2 h-4 w-4' />
+                    Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button onClick={() => router.push("/auth/sign-in")} className='cursor-pointer' variant='default' size='sm'>
+              <Button onClick={() => router.push("/auth/sign-in")} variant='default' size='sm'>
                 Sign In
               </Button>
             )}
@@ -88,7 +107,7 @@ export default function NavbarContent({ user }: { user: User }) {
 
           {/* Mobile Right side */}
           <Suspense>
-            <NavbarMobileDrawer setIsSearchOpen={setIsSearchOpen} isSearchOpen={isSearchOpen} />
+            <NavbarMobileDrawer user={user as User} setIsSearchOpen={setIsSearchOpen} isSearchOpen={isSearchOpen} />
           </Suspense>
         </Container>
 

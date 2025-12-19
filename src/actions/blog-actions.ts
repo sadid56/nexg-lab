@@ -90,6 +90,9 @@ export const GetRecentBlog = async () => {
         createdAt: "desc",
       },
       take: 5,
+      where: {
+        status: "active",
+      },
       select: {
         id: true,
         title: true,

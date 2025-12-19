@@ -3,9 +3,9 @@ import { ModeToggle } from "@/components/global/ModeToggle";
 import { Button } from "@/components/ui/button";
 import { CACHE_TIME, POPULAR_TOPICS } from "@/constants/common";
 import { useIsMobile } from "@/hooks/use-mobile";
-import useCurrentUser from "@/hooks/useCurrentUser";
 import useSignOut from "@/hooks/useSignOut";
 import { cn } from "@/lib/utils";
+import { User } from "@/types/users-types";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, Hash, LogOut, Menu, Search } from "lucide-react";
 import Link from "next/link";
@@ -16,9 +16,10 @@ import { Drawer } from "vaul";
 interface NavbarMobileDrawerProps {
   setIsSearchOpen: (open: boolean) => void;
   isSearchOpen: boolean;
+  user: User;
 }
 
-const NavbarMobileDrawer: React.FC<NavbarMobileDrawerProps> = ({ setIsSearchOpen, isSearchOpen }) => {
+const NavbarMobileDrawer: React.FC<NavbarMobileDrawerProps> = ({ setIsSearchOpen, isSearchOpen, user }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { signout } = useSignOut();
@@ -26,7 +27,6 @@ const NavbarMobileDrawer: React.FC<NavbarMobileDrawerProps> = ({ setIsSearchOpen
   const isMobile = useIsMobile();
 
   const keywords = POPULAR_TOPICS;
-  const { user } = useCurrentUser({ enabled: isMobile });
 
   const { data: recentBlogs } = useQuery({
     queryKey: ["blogs"],

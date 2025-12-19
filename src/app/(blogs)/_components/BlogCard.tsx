@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ArrowRight } from "lucide-react";
 import { Post } from "../../../../prisma/generated/client";
+import Image from "next/image";
 
 export default function BlogCardHorizontal({ post }: { post: Post }) {
   return (
@@ -11,10 +12,12 @@ export default function BlogCardHorizontal({ post }: { post: Post }) {
         {/* Left: Thumbnail */}
         {post.coverImage && (
           <div className='relative h-full w-full md:w-2/5 flex-shrink-0 overflow-hidden'>
-            <img
+            <Image
+              width={600}
+              height={500}
               src={post.coverImage}
               alt={post.title}
-              className='h-full w-full object-container transition-transform duration-700 group-hover:scale-110 will-change-transform'
+              className='h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 will-change-transform'
             />
 
             {/* Category badge */}

@@ -16,16 +16,32 @@ git clone https://github.com/sadid56/nexg-lab.git
 pnpm install
 ```
 
-- Create on root directory .env file and use databse url
+- Create on root directory .env file and use env secrets
 
 ```
 DATABASE_URL="your data base url"
+CLOUDINARY_CLOUD_NAME=""
+CLOUDINARY_API_KEY=""
+CLOUDINARY_API_SECRET=""
+BETTER_AUTH_URL=""
+BETTER_AUTH_SECRET=""
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+GITHUB_CLIENT_ID=""
+GITHUB_CLIENT_SECRET=""
+GOOGLE_APP_PASSWORD=""
+GOOGLE_APP_EMAIL=""
 ```
 
 - Generate prisma
 
 ```
 pnpm prisma generate
+```
+- Push your current prisma schema in database
+
+```
+pnpm prisma db push
 ```
 
 - Run project

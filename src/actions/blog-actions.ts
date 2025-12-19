@@ -3,6 +3,8 @@
 import prisma from "@/lib/prisma";
 
 export const GetBlogs = async (category?: string, search?: string) => {
+  console.log(category, search, "hi");
+
   try {
     const blogs = await prisma.post.findMany({
       where: {

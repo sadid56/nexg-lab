@@ -196,7 +196,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
           <DialogFooter className='flex flex-col gap-3 sm:flex-col mt-5'>
             <Button
               onClick={() => router.push(`/auth/sign-in?callbackUrl=${encodeURIComponent(pathname)}`)}
-              className='bg-orange-600 hover:bg-orange-700 w-full'
+              className='bg-orange-600 hover:bg-orange-700 w-full text-white'
             >
               Sign In to Submit
             </Button>

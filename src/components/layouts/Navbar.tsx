@@ -46,14 +46,25 @@ export default function Navbar() {
       >
         <Container className='flex justify-between items-center py-1'>
           {/* Left side - Website Name */}
-          <Link href='/' className='text-xl font-bold text-gray-900 dark:text-white'>
-            <img src='/logo.png' alt='Logo' loading='eager' className='w-32 sm:w-48 h-auto' />
+          <Link href='/'>
+            <h1 className='flex items-center gap-2 text-2xl md:text-3xl font-mono font-semibold'>
+              <span className='text-orange-400 animate-pulse'>{">"}</span>
+              <div className='relative'>
+                <span className='font-bold bg-gradient-to-r from-amber-500 via-orange-400 to-amber-600 bg-clip-text text-transparent animate-gradient'>
+                  NexG
+                </span>
+                <span className='font-bold text-amber-200'>Lab</span>
+                <span className='absolute -right-4 text-orange-300'>_</span>
+              </div>
+            </h1>
           </Link>
 
           {/* Desktop Right side */}
           <div className='hidden lg:flex items-center gap-4'>
             {/* Modern Search Input */}
-            <Suspense fallback={<Skeleton className='w-64 h-9 rounded-md bg-gray-200' />}>
+            <Suspense
+              fallback={<Skeleton className='w-full lg:w-[400px] h-9 rounded-md bg-gray-200 dark:bg-[#16120B] border border-[#1E1A14]' />}
+            >
               <NavbarSearchBox />
             </Suspense>
 
@@ -74,7 +85,6 @@ export default function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button variant='ghost' className='flex w-[70px] items-center gap-2 rounded-full px-2 py-1'>
                     <img src={user.image || ""} className='w-8 h-8 rounded-full' alt={user.name} />
-                    {/* <span className='hidden sm:block'>{user.name.slice(0, 3)}</span> */}
                   </Button>
                 </DropdownMenuTrigger>
 

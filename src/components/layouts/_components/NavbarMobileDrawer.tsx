@@ -1,16 +1,16 @@
-import { GetRecentBlog } from "@/actions/blog-actions";
 import { ModeToggle } from "@/components/global/ModeToggle";
 import { Button } from "@/components/ui/button";
-import { CACHE_TIME, POPULAR_TOPICS } from "@/constants/common";
+import { POPULAR_TOPICS } from "@/constants/common";
 import { useIsMobile } from "@/hooks/use-mobile";
+import useRecentBlogs from "@/hooks/useRecentBlogs";
 import useSignOut from "@/hooks/useSignOut";
 import { cn } from "@/lib/utils";
 import { User } from "@/types/users-types";
-import { useQuery } from "@tanstack/react-query";
-import { Clock, Hash, LogOut, Menu, Search } from "lucide-react";
+import { IconBrandGithub } from "@tabler/icons-react";
+import { Clock, Hash, Layout, LogOut, Menu, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Drawer } from "vaul";
 
 interface NavbarMobileDrawerProps {
@@ -28,12 +28,16 @@ const NavbarMobileDrawer: React.FC<NavbarMobileDrawerProps> = ({ setIsSearchOpen
 
   const keywords = POPULAR_TOPICS;
 
-  const { data: recentBlogs } = useQuery({
-    queryKey: ["blogs"],
-    queryFn: () => GetRecentBlog(),
-    staleTime: CACHE_TIME[10],
-    enabled: isMobile,
-  });
+  const { blogs: recentBlogs } = useRecentBlogs(isMobile);
+
+  const [drawerHeight, setDrawerHeight] = useState("90vh");
+
+  useEffect(() => {
+    const updateHeight = () => setDrawerHeight(`${window.innerHeight * 0.9}px`);
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
 
   const handleClickTag = (category: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -67,7 +71,10 @@ const NavbarMobileDrawer: React.FC<NavbarMobileDrawerProps> = ({ setIsSearchOpen
 
         <Drawer.Portal>
           <Drawer.Overlay className='fixed inset-0 bg-black/10 z-50 backdrop-blur-sm' />
-          <Drawer.Content className='bg-white dark:bg-gray-950 flex flex-col rounded-t-[10px] h-[90vh] fixed bottom-0 left-0 right-0 z-50'>
+          <Drawer.Content
+            style={{ height: drawerHeight }}
+            className='bg-white dark:bg-gray-950 flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-50'
+          >
             <Drawer.Title className='sr-only'></Drawer.Title>
             <div className='p-4 bg-white dark:bg-gray-950 rounded-t-[10px] flex-1 overflow-y-auto'>
               {/* Drawer Handle */}
@@ -84,15 +91,25 @@ const NavbarMobileDrawer: React.FC<NavbarMobileDrawerProps> = ({ setIsSearchOpen
                         <span className='text-xs text-muted-foreground'>{user.email}</span>
                       </div>
                     </div>
-                    <div className='flex gap-2 items-center '>
-                      <Button onClick={signout} variant='outline' className='w-1/2 justify-start' size='sm'>
+                    <div className={cn("grid gap-2", user?.role === "ADMIN" ? "grid-cols-3" : "grid-cols-2")}>
+                      <Button onClick={signout} variant='outline' size='sm'>
                         <LogOut className='mr-2 h-4 w-4' /> Logout
                       </Button>
-                      <Button variant='outline' className=' justify-start w-1/2' size='sm'>
-                        <a href='https://github.com/sadid56/nexg-lab' target='_blank' rel='noopener noreferrer'>
-                          GitHub
+                      <Button variant='outline' size='sm'>
+                        <a
+                          className='flex items-center gap-2'
+                          href='https://github.com/sadid56/nexg-lab'
+                          target='_blank'
+                          rel='noopener noreferrer'
+                        >
+                          <IconBrandGithub stroke={2} /> GitHub
                         </a>
                       </Button>
+                      {user?.role === "ADMIN" && (
+                        <Button variant={"outline"} size={"sm"}>
+                          <Layout /> Dashboard
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ) : (

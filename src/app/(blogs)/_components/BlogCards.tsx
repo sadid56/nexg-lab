@@ -5,13 +5,15 @@ import { GetBlogs } from "@/actions/blog-actions";
 import { useQuery } from "@tanstack/react-query";
 import { CACHE_TIME } from "@/constants/common";
 import BlogCardHorizontal from "./BlogCard";
-import { Post } from "../../../../prisma/generated/client";
 import { BlogCardHorizontalSkeleton } from "./BlogCardHorizentalSkeketon";
+import { useSearchParams } from "next/navigation";
 
-type BlogsResponse = Awaited<ReturnType<typeof GetBlogs>>;
+const BlogCards = () => {
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category") || "";
+  const search = searchParams.get("search") || "";
 
-const BlogCards = ({ category, search }: { category: string; search: string }) => {
-  const { data: blogs, isLoading } = useQuery<BlogsResponse>({
+  const { data: blogs, isLoading } = useQuery({
     queryKey: ["blogs", category, search],
     queryFn: () => GetBlogs(category, search),
     staleTime: CACHE_TIME[10],
@@ -38,7 +40,7 @@ const BlogCards = ({ category, search }: { category: string; search: string }) =
 
   return (
     <div className='space-y-4'>
-      {blogs?.map((blog: Post) => (
+      {blogs?.map((blog: any) => (
         <BlogCardHorizontal post={blog} key={blog.id}></BlogCardHorizontal>
       ))}
     </div>

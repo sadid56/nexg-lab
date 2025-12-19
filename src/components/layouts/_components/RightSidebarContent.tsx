@@ -14,6 +14,8 @@ import { cn } from "@/lib/utils";
 import { POPULAR_TOPICS } from "@/constants/common";
 import useRecentBlogs from "@/hooks/useRecentBlogs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PostNewsLetter } from "@/actions/newsletter-action";
+import { Spinner } from "@/components/ui/spinner";
 
 // --------------------
 // Section Header Component
@@ -157,9 +159,9 @@ function ShareCTA() {
 
           {/* Copy Link Section */}
           <div className='space-y-4 pt-4 border-gray-200 dark:border-gray-800'>
-            <div className='relative'>
+            <div className='relative flex items-center gap-2'>
               <Input type='text' value={currentUrl} readOnly className='pr-12 font-mono text-sm bg-gray-50 dark:bg-gray-900' />
-              <Button onClick={handleCopyLink} variant='outline' className='absolute right-1 top-1/2 transform -translate-y-1/2' size='sm'>
+              <Button onClick={handleCopyLink} variant='outline'>
                 {copied ? (
                   <>
                     <span className='text-green-600 mr-1'>✓</span>
@@ -194,8 +196,30 @@ function ShareCTA() {
 export default function RightSidebarContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const { blogs: recentPosts, isLoading } = useRecentBlogs();
+
+  const handleSubmit = async () => {
+    if (!email.trim()) {
+      return toast.warning("Please type your email first!");
+    }
+
+    try {
+      setSubmitting(true);
+      const res = await PostNewsLetter(email);
+      if (res?.status === 201) {
+        setEmail("");
+        toast.success("Email submitted successfully!");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("Newsletter submit failed!");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <aside className='space-y-8 px-4 sticky top-0 pt-20'>
@@ -266,14 +290,19 @@ export default function RightSidebarContent() {
         <h4 className='font-bold text-sm text-gray-800 dark:text-gray-200 mb-2'>Stay Updated</h4>
         <p className='text-xs text-gray-600 dark:text-gray-400 mb-3'>Get the latest articles delivered to your inbox</p>
         <div className='flex gap-2'>
-          <input
+          <Input
             type='email'
-            defaultValue={""}
             placeholder='Your email'
-            className='flex-1 px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 w-[70%] focus:outline-none focus:border-orange-500'
+            required
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            className='flex-1 px-3 py-2 text-sm rounded-lg w-[70%] focus:outline-none focus:border-orange-500'
           />
-          <Button className='w-[20%] bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg hover:shadow-xl transition-all duration-300'>
-            Join
+          <Button
+            onClick={handleSubmit}
+            className='w-[20%] bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg hover:shadow-xl transition-all duration-300'
+          >
+            {submitting ? <Spinner /> : "Join"}
           </Button>
         </div>
       </div>

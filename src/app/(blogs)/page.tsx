@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import BlogCards from "./_components/BlogCards";
 
+export const revalidate = 600;
+
 export const metadata: Metadata = {
   title: {
     default: "NexG Lab — Modern software architecture",
@@ -54,11 +56,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
-  const { category, search } = (await searchParams) as {
-    category: string;
-    search: string;
-  };
-
-  return <BlogCards category={category} search={search} />;
+export default async function Home() {
+  return <BlogCards />;
 }

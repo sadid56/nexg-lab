@@ -33,13 +33,6 @@ model Category {
   updatedAt DateTime @updatedAt
 }
 
-enum BlockType {
-  INFO
-  WARNING
-  ERROR
-  TIPS
-}
-
 model Feedback {
   id        String   @id @default(cuid())
   feedback  String?
@@ -99,19 +92,28 @@ model verification {
 }
 
 model User {
-  id            String     @id
+  id            String       @id
   name          String
-  email         String     @unique
+  email         String       @unique
   emailVerified Boolean
   image         String?
-  role          Role       @default(USER)
-  createdAt     DateTime   @default(now())
+  role          Role         @default(USER)
+  createdAt     DateTime     @default(now())
   updatedAt     DateTime
-  banned        Boolean    @default(false)
+  banned        Boolean      @default(false)
   banReason     String?
   feedbacks     Feedback[]
   accounts      account[]
   sessions      session[]
+  newsLetter    Newsletter[]
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String
+  userId    String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
 }
 
 enum Status {
@@ -123,4 +125,11 @@ enum Status {
 enum Role {
   USER
   ADMIN
+}
+
+enum BlockType {
+  INFO
+  WARNING
+  ERROR
+  TIPS
 }

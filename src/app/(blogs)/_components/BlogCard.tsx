@@ -4,14 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, ArrowRight } from "lucide-react";
 import { Post } from "../../../../prisma/generated/client";
 import Image from "next/image";
+import { TBlog } from "@/types/blog-types";
 
-export default function BlogCardHorizontal({ post }: { post: Post }) {
+export default function BlogCardHorizontal({ post }: { post: TBlog }) {
   return (
     <Card className='group relative h-full md:h-[320px] w-full overflow-hidden rounded-3xl border-2 border-gray-200 dark:border-gray-800 p-0 shadow-none backdrop-blur-sm transition-all duration-500'>
       <div className='relative flex h-full flex-col md:flex-row'>
         {/* Left: Thumbnail */}
         {post.coverImage && (
-          <div className='relative h-full w-full md:w-2/5 flex-shrink-0 overflow-hidden'>
+          <div className='relative  w-full aspect-video h-56 md:h-full md:w-2/5 flex-shrink-0 overflow-hidden'>
             <Image
               width={600}
               height={500}

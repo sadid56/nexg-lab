@@ -1,9 +1,7 @@
-import { GetBlogs } from "@/actions/blog-actions";
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-import BlogCard from "./_components/BlogCard";
-import { TBlog } from "@/types/blog-types";
 import { Metadata } from "next";
-import { NoData } from "@/components/ui/no-data";
+import BlogCards from "./_components/BlogCards";
+
+export const revalidate = 600;
 
 export const metadata: Metadata = {
   title: {
@@ -58,33 +56,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
-  const queryClient = new QueryClient();
-  const { category, search } = (await searchParams) as {
-    category: string;
-    search: string;
-  };
-
-  const blogs: TBlog[] = await queryClient.fetchQuery({
-    queryKey: ["blogs"],
-    queryFn: () => GetBlogs(category, search),
-    staleTime: Infinity,
-  });
-
-  if (blogs?.length === 0) {
-    return (
-      <NoData
-        title="Can't find any blog!"
-        description="We can't find any blogs with our queries please try another search or filter."
-      ></NoData>
-    );
-  }
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      {blogs?.map((blog: TBlog) => (
-        <BlogCard post={blog} key={blog?.id} />
-      ))}
-    </HydrationBoundary>
-  );
+export default async function Home() {
+  return <BlogCards />;
 }

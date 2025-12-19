@@ -27,7 +27,7 @@ type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 const BlogDetails = ({ blog }: { blog: TBlog }) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useCurrentUser();
+  const { user } = useCurrentUser({});
 
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,6 +70,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
       form.reset();
       setShowSignInModal(false);
     } catch (error) {
+      console.log(error);
       toast.error("Failed to submit feedback. Please try again.");
     } finally {
       setIsLoading(false);
@@ -195,7 +196,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
           <DialogFooter className='flex flex-col gap-3 sm:flex-col mt-5'>
             <Button
               onClick={() => router.push(`/auth/sign-in?callbackUrl=${encodeURIComponent(pathname)}`)}
-              className='bg-orange-600 hover:bg-orange-700 w-full'
+              className='bg-orange-600 hover:bg-orange-700 w-full text-white'
             >
               Sign In to Submit
             </Button>

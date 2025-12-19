@@ -15,7 +15,7 @@ const CodeBlock = ({ className, children }: any) => {
   };
 
   return (
-    <div className='relative group mb-6 rounded-2xl overflow-hidden border border-muted/50 bg-gradient-to-br from-muted/30 to-muted/10 backdrop-blur-sm shadow transition-all duration-300'>
+    <div className='relative group mb-6 rounded-2xl overflow-hidden border border-muted/50 bg-gradient-to-br from-muted/50 to-muted/30 backdrop-blur-sm shadow transition-all duration-300'>
       {/* Language badge */}
       <div className='absolute top-3 left-4 z-10'>
         <span className='text-xs font-mono font-semibold text-muted-foreground bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full border border-muted/50'>
@@ -30,7 +30,7 @@ const CodeBlock = ({ className, children }: any) => {
       {/* Copy button */}
       <button
         onClick={handleCopy}
-        className='absolute top-3 right-3 bg-background/80 hover:bg-background backdrop-blur-sm border border-muted/50 text-foreground px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs font-medium transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer'
+        className='absolute top-3 right-3 bg-gray-200 dark:bg-muted-foreground/20 hover:bg-background backdrop-blur-sm border border-muted/50 text-foreground px-3 py-1.5 rounded-xl flex items-center gap-2 text-xs font-medium transition-all duration-200 hover:scale-105 hover:shadow-md cursor-pointer'
       >
         {copied ? (
           <>
@@ -86,7 +86,7 @@ export const markdownComponents = {
   a: ({ href, children, ...props }: any) => (
     <a
       href={href}
-      className='inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline decoration-blue-600/30 hover:decoration-blue-600 underline-offset-2 transition-all font-medium group'
+      className='flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline decoration-blue-600/30 hover:decoration-blue-600 underline-offset-2 transition-all font-medium group'
       target={href?.startsWith("http") ? "_blank" : undefined}
       rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
       {...props}

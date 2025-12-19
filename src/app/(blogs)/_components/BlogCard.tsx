@@ -2,24 +2,28 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ArrowRight } from "lucide-react";
+import { Post } from "../../../../prisma/generated/client";
+import Image from "next/image";
 import { TBlog } from "@/types/blog-types";
 
 export default function BlogCardHorizontal({ post }: { post: TBlog }) {
   return (
-    <Card className='group relative rounded-3xl border-2 border-gray-200 dark:border-gray-800  transition-all duration-500 overflow-hidden backdrop-blur-sm p-0 shadow-none w-full'>
-      <div className='relative flex flex-col md:flex-row'>
-        {/* Left: Image with overlay effects */}
+    <Card className='group relative h-full md:h-[320px] w-full overflow-hidden rounded-3xl border-2 border-gray-200 dark:border-gray-800 p-0 shadow-none backdrop-blur-sm transition-all duration-500'>
+      <div className='relative flex h-full flex-col md:flex-row'>
+        {/* Left: Thumbnail */}
         {post.coverImage && (
-          <div className='relative w-full md:w-2/5 aspect-video flex-shrink-0 overflow-hidden'>
-            <img
+          <div className='relative  w-full aspect-video h-56 md:h-full md:w-2/5 flex-shrink-0 overflow-hidden'>
+            <Image
+              width={600}
+              height={500}
               src={post.coverImage}
               alt={post.title}
-              className='transition-transform duration-700 group-hover:scale-110 will-change-transform'
+              className='h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 will-change-transform'
             />
 
-            {/* Category badge floating on image */}
+            {/* Category badge */}
             <div className='absolute top-4 left-4 z-10'>
-              <Badge className='bg-gradient-to-r from-orange-500 to-pink-500 text-white border-0 shadow-lg backdrop-blur-sm px-3 py-1'>
+              <Badge className='border-0 bg-gradient-to-r from-orange-500 to-pink-500 px-3 py-1 text-white shadow-lg backdrop-blur-sm'>
                 {post.category}
               </Badge>
             </div>
@@ -27,39 +31,43 @@ export default function BlogCardHorizontal({ post }: { post: TBlog }) {
         )}
 
         {/* Right: Content */}
-        <CardContent className='flex flex-col justify-between p-6 md:p-8 md:w-3/5 space-y-4 relative z-10'>
-          <div className='space-y-4'>
-            {/* Meta info */}
+        <CardContent className='flex h-full flex-col justify-between space-y-4 p-6 md:w-3/5 md:p-8 relative z-10'>
+          <div className='space-y-4 overflow-hidden'>
+            {/* Meta */}
             <div className='flex items-center gap-3'>
-              <div className='flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/50 rounded-full px-3 py-1.5 backdrop-blur-sm'>
+              <div className='flex items-center gap-1.5 rounded-full bg-muted/50 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur-sm'>
                 <Clock className='h-3.5 w-3.5' />
-                <span className='font-medium'>{post?.readTime} min read</span>
+                <span className='font-medium'>{post.readTime} min read</span>
               </div>
               <div className='h-1 w-1 rounded-full bg-muted-foreground/50' />
-              <span className='text-xs text-muted-foreground font-medium'>
-                {new Date(post.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+              <span className='text-xs font-medium text-muted-foreground'>
+                {new Date(post.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                })}
               </span>
             </div>
 
             {/* Title */}
-            <Link href={`/read/${post.slug}`} className='block group/link'>
-              <h3 className='text-xl md:text-2xl font-bold leading-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text group-hover/link:from-orange-500 group-hover/link:to-pink-500 transition-all duration-300'>
+            <Link href={`/read/${post.slug}`} className='group/link block'>
+              <h3 className='text-xl md:text-2xl font-bold leading-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text transition-all duration-300 group-hover/link:from-orange-500 group-hover/link:to-pink-500'>
                 {post.title}
               </h3>
             </Link>
 
             {/* Description */}
-            <p className='text-sm md:text-base text-muted-foreground line-clamp-3 leading-relaxed'>{post.descriptions}</p>
+            <p className='line-clamp-3 text-sm md:text-base leading-relaxed text-muted-foreground'>{post.descriptions}</p>
           </div>
 
-          {/* Tags and CTA */}
-          <div className='flex items-center justify-between gap-4 pt-4 border-t border-muted/30'>
+          {/* Footer */}
+          <div className='flex items-center justify-between gap-4 border-t border-muted/30 pt-4'>
+            {/* Tags */}
             <div className='flex flex-wrap gap-2 flex-1'>
               {post.tags.slice(0, 3).map((tag) => (
                 <Badge
                   key={tag}
                   variant='outline'
-                  className='text-xs border-muted hover:border-orange-500/50 hover:bg-orange-500/5 transition-colors'
+                  className='text-xs border-muted transition-colors hover:border-orange-500/50 hover:bg-orange-500/5'
                 >
                   #{tag}
                 </Badge>
@@ -71,13 +79,13 @@ export default function BlogCardHorizontal({ post }: { post: TBlog }) {
               )}
             </div>
 
-            {/* Read more CTA */}
+            {/* CTA */}
             <Link
               href={`/read/${post.slug}`}
-              className='flex items-center gap-2 text-sm font-semibold text-orange-500 hover:gap-3 transition-all duration-300 group/arrow'
+              className='group/arrow flex items-center gap-2 text-sm font-semibold text-orange-500 transition-all duration-300 hover:gap-3'
             >
               Read
-              <ArrowRight className='h-4 w-4 group-hover/arrow:translate-x-1 transition-transform' />
+              <ArrowRight className='h-4 w-4 transition-transform group-hover/arrow:translate-x-1' />
             </Link>
           </div>
         </CardContent>

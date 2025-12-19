@@ -4,7 +4,7 @@ import { GetCurrentUser } from "@/actions/auth-actions";
 import { CACHE_TIME } from "@/constants/common";
 import { useQuery } from "@tanstack/react-query";
 
-const useCurrentUser = () => {
+const useCurrentUser = ({ enabled = true }: { enabled?: boolean }) => {
   const {
     data: user,
     isLoading,
@@ -16,6 +16,7 @@ const useCurrentUser = () => {
       return res ?? null;
     },
     staleTime: CACHE_TIME[10],
+    enabled,
   });
   return { user, isLoading, error };
 };

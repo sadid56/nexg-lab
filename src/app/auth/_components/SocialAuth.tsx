@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { Dispatch, SetStateAction } from "react";
 
 interface SocialAuthProps {
@@ -26,6 +27,7 @@ const SocialAuth: React.FC<SocialAuthProps> = ({ setLoading, callbackUrl, loadin
         onClick={() => socialSignup("google")}
         disabled={loading}
       >
+        <IconBrandGoogle stroke={2} />
         Google
       </Button>
 
@@ -36,6 +38,7 @@ const SocialAuth: React.FC<SocialAuthProps> = ({ setLoading, callbackUrl, loadin
         onClick={() => socialSignup("github")}
         disabled={loading}
       >
+        <IconBrandGithub stroke={2} />
         GitHub
       </Button>
     </div>

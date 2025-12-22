@@ -9,6 +9,11 @@ This is a Next.js blog project, designed to share content related to coding, Lin
 ```
 git clone https://github.com/sadid56/nexg-lab.git
 ```
+- Navigate Directory
+  
+```
+cd nexg-lab
+```
 
 - Install dependencies
 

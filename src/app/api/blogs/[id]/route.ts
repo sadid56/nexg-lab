@@ -3,6 +3,7 @@ import { RouteParams } from "@/types/next";
 import { NextRequest, NextResponse } from "next/server";
 import { deleteFromCloudinary, uploadToCloudinary } from "@/lib/cloudinary";
 import { generateSlug } from "@/utils/generateSlug";
+import { revalidatePath } from "next/cache";
 
 export async function GET(request: NextRequest, { params }: RouteParams<"id">) {
   try {
@@ -34,7 +35,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams<"id">
     // Find the blog post first
     const post = await prisma.post.findUnique({
       where: { id },
-      select: { coverImage: true },
+      select: { coverImage: true, slug: true },
     });
 
     if (!post) {
@@ -48,6 +49,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams<"id">
     await prisma.post.delete({
       where: { id },
     });
+
+    revalidatePath("/");
+    revalidatePath(`/read/${post.slug}`);
 
     return NextResponse.json({ message: "Post deleted successfully" });
   } catch (error) {
@@ -117,6 +121,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams<"id">) {
         updatedAt: new Date(),
       },
     });
+    revalidatePath("/");
+    revalidatePath(`/read/${result.slug}`);
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {

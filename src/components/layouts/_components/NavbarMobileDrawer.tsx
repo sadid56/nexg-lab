@@ -106,7 +106,7 @@ const NavbarMobileDrawer: React.FC<NavbarMobileDrawerProps> = ({ setIsSearchOpen
                         </a>
                       </Button>
                       {user?.role === "ADMIN" && (
-                        <Button variant={"outline"} size={"sm"}>
+                        <Button onClick={() => router.push("/dashboard")} variant={"outline"} size={"sm"}>
                           <Layout /> Dashboard
                         </Button>
                       )}

@@ -1,29 +1,28 @@
 "use client";
-import * as React from "react";
-import Link from "next/link";
-import { Clock, Hash, Share2, Copy } from "lucide-react";
-import { useState } from "react";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { TBlog } from "@/types/blog-types";
+import React, { useState } from "react";
+import Link from "next/link";
+import { Clock, Hash, SlidersHorizontal, Mail, Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { Kbd } from "@/components/ui/kbd";
 import { POPULAR_TOPICS } from "@/constants/common";
 import useRecentBlogs from "@/hooks/useRecentBlogs";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useCustomization } from "@/providers/CustomizationProvider";
+import { TBlog } from "@/types/blog-types";
+import { toast } from "sonner";
 import { PostNewsLetter } from "@/actions/newsletter-action";
-import { Spinner } from "@/components/ui/spinner";
+import { Input } from "@/components/ui/input";
 
 // --------------------
 // Section Header Component
 // --------------------
 function SectionHeader({ icon, title }: { icon: React.ReactNode; title: string }) {
   return (
-    <div className='flex items-center justify-between mb-4'>
-      <div className='flex items-center gap-2'>
+    <div className='flex items-center justify-between mb-3'>
+      <div className='flex items-center gap-3'>
         {icon}
         <h3 className='font-bold text-sm tracking-tight text-gray-800 dark:text-gray-200'>{title}</h3>
       </div>
@@ -35,12 +34,9 @@ const BlogItemSkeleton = () => {
   return (
     <div className='flex items-start gap-3 p-3 rounded-xl border border-transparent'>
       <div className='flex-1 min-w-0 space-y-2'>
-        {/* Title skeleton */}
-        <Skeleton className='h-3 w-4/5 rounded-md' />
+        <Skeleton className='h-3.5 w-full rounded-md' />
         <Skeleton className='h-3 w-1/2 rounded-md' />
-
-        {/* Read time skeleton */}
-        <div className='flex items-center gap-1.5'>
+        <div className='flex items-center gap-1.5 pt-1'>
           <Skeleton className='h-3 w-3 rounded-full' />
           <Skeleton className='h-3 w-10 rounded-md' />
         </div>
@@ -56,16 +52,16 @@ function PostLink({ post }: { post: TBlog }) {
   return (
     <Link
       href={`/read/${post.slug}`}
-      className='group flex items-start gap-3 p-3 rounded-xl hover:bg-orange-50 dark:hover:bg-gray-800/50 transition-all duration-200 border border-transparent hover:border-orange-200 dark:hover:border-gray-800'
+      className='group flex items-start gap-3 p-3 rounded-xl hover:bg-orange-50 dark:hover:bg-orange-500/5 transition-all duration-300 border border-transparent hover:border-orange-200/50 dark:hover:border-orange-500/10'
     >
       <div className='flex-1 min-w-0'>
-        <span className='text-sm font-medium leading-tight text-gray-800 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors block'>
+        <span className='text-sm font-bold leading-snug text-gray-800 dark:text-gray-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors block line-clamp-2'>
           {post.title}
         </span>
         {post.readTime && (
-          <div className='flex items-center gap-1 mt-1.5'>
-            <Clock className='h-3 w-3 text-gray-400' />
-            <span className='text-xs text-gray-500'>{post.readTime} min</span>
+          <div className='flex items-center gap-1.5 mt-2'>
+            <Clock className='h-3 w-3 text-muted-foreground' />
+            <span className='text-[10px] font-bold text-muted-foreground uppercase tracking-wider'>{post.readTime} min read</span>
           </div>
         )}
       </div>
@@ -81,112 +77,28 @@ function ModernTag({ tag }: { tag: { title: string; slug: string } }) {
   const router = useRouter();
   const category = searchParams.get("category");
 
-  const handleClickTag = (category: string) => {
+  const handleClickTag = (catSlug: string) => {
     const params = new URLSearchParams(searchParams.toString());
-
-    params.set("category", category);
+    params.set("category", catSlug);
     router.replace(`/?${params.toString()}`, { scroll: false });
   };
+
+  const isActive = tag.slug === category;
 
   return (
     <Button
       size={"sm"}
       onClick={() => handleClickTag(tag.slug)}
+      variant='ghost'
       className={cn(
-        `inline-flex items-center rounded-full bg-gray-100 dark:bg-neutral-800 px-3 py-1 text-xs font-medium text-gray-600  hover:text-orange-500 hover:bg-orange-100 dark:hover:bg-neutral-700 transition-colors`,
-        tag.slug === category ? "text-orange-500  bg-orange-100" : "dark:text-gray-300"
+        "h-8 rounded-full px-3 text-[11px] font-bold uppercase tracking-wider transition-all duration-300",
+        isActive
+          ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20"
+          : "bg-muted/50 text-muted-foreground hover:bg-orange-500/10 hover:text-orange-600 dark:hover:text-orange-400",
       )}
     >
       {tag.title}
     </Button>
-  );
-}
-
-// --------------------
-// Share CTA Component with Shadcn Dialog
-// --------------------
-function ShareCTA() {
-  const [showShareDialog, setShowShareDialog] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
-
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(currentUrl);
-      setCopied(true);
-      toast.success("Link Copied!");
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error("Failed to copy:", err);
-    }
-  };
-
-  return (
-    <>
-      <div className='p-5 rounded-xl bg-gradient-to-br from-orange-500/5 via-amber-500/5 to-yellow-500/5 border border-orange-200/50 dark:border-orange-800/30 backdrop-blur-sm'>
-        <div className='flex items-center gap-3 mb-4'>
-          <div className='p-2.5 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 shadow-lg'>
-            <Share2 className='h-5 w-5 text-white' />
-          </div>
-          <div>
-            <h3 className='font-bold text-sm text-gray-800 dark:text-gray-200'>Share This Article</h3>
-            <p className='text-xs text-gray-500 dark:text-gray-400 mt-0.5'>Spread the knowledge</p>
-          </div>
-        </div>
-        <Button
-          onClick={() => setShowShareDialog(true)}
-          className='w-full bg-gradient-to-r from-orange-500 to-amber-500  text-white shadow-lg hover:shadow-xl transition-all duration-300'
-        >
-          <Share2 className='h-4 w-4 mr-2' />
-          Share Now
-        </Button>
-      </div>
-
-      {/* Shadcn Dialog for Sharing */}
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-        <DialogContent className='sm:max-w-md p-6'>
-          <DialogHeader className='space-y-4'>
-            <div className='flex items-center gap-3'>
-              <div className='p-2 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500'>
-                <Share2 className='h-5 w-5 text-white' />
-              </div>
-              <DialogTitle className='text-xl font-bold'>Share This Article</DialogTitle>
-            </div>
-            <DialogDescription className='text-gray-500 dark:text-gray-400'>
-              Share this article with your friends and colleagues
-            </DialogDescription>
-          </DialogHeader>
-
-          {/* Copy Link Section */}
-          <div className='space-y-4 pt-4 border-gray-200 dark:border-gray-800'>
-            <div className='relative flex items-center gap-2'>
-              <Input type='text' value={currentUrl} readOnly className='pr-12 font-mono text-sm bg-gray-50 dark:bg-gray-900' />
-              <Button onClick={handleCopyLink} variant='outline'>
-                {copied ? (
-                  <>
-                    <span className='text-green-600 mr-1'>✓</span>
-                    Copied
-                  </>
-                ) : (
-                  <>
-                    <Copy className='h-4 w-4 mr-1' />
-                    Copy
-                  </>
-                )}
-              </Button>
-            </div>
-
-            <div className='flex gap-2'>
-              <DialogClose asChild>
-                <Button variant='outline' className='flex-1'>
-                  Close
-                </Button>
-              </DialogClose>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
   );
 }
 
@@ -196,10 +108,11 @@ function ShareCTA() {
 export default function RightSidebarContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { setShowTweakDialog, sidebarGap, shortcutKeys } = useCustomization();
+  const { blogs: recentPosts, isLoading } = useRecentBlogs();
+
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
-  const { blogs: recentPosts, isLoading } = useRecentBlogs();
 
   const handleSubmit = async () => {
     if (!email.trim()) {
@@ -211,10 +124,12 @@ export default function RightSidebarContent() {
       const res = await PostNewsLetter(email);
       if (res?.status === 201) {
         setEmail("");
-        toast.success("Email submitted successfully!");
+        toast.success("Welcome to the lab! 🧪 You will get latest updates in your email.");
+      } else {
+        toast.error("Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.error("Newsletter submit failed!");
     } finally {
       setSubmitting(false);
@@ -222,54 +137,55 @@ export default function RightSidebarContent() {
   };
 
   return (
-    <aside className='space-y-8 px-4 sticky top-0 pt-20'>
+    <aside className='flex flex-col px-4 sticky top-0 pt-16 pb-10' style={{ gap: `${sidebarGap}px` }}>
       {/* Recent Posts Section */}
-      <div className='space-y-1'>
+      <div className='space-y-3'>
         <SectionHeader
           icon={
-            <div className='p-1.5 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500'>
-              <Clock className='h-4 w-4 text-white' />
+            <div className='p-2 rounded-xl bg-linear-to-br from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/20'>
+              <Clock className='h-4 w-4' />
             </div>
           }
-          title='Recent Posts'
+          title='Recent Stories'
         />
         <div className='space-y-1'>
           {isLoading ? (
-            <div>
+            <div className='space-y-2'>
               {Array.from({ length: 3 }).map((_, i) => (
                 <BlogItemSkeleton key={i} />
               ))}
             </div>
           ) : (
-            <>
-              {recentPosts?.map((post: any) => (
+            <div className='space-y-1'>
+              {recentPosts?.slice(0, 5).map((post: any) => (
                 <PostLink key={post.id} post={post} />
               ))}
-            </>
+            </div>
           )}
         </div>
       </div>
 
-      <div className='h-px bg-gradient-to-r from-transparent via-orange-200 dark:via-orange-900 to-transparent' />
+      <div className='h-px bg-linear-to-r from-transparent via-muted to-transparent' />
 
-      {/* Popular Tags */}
-      <div className='space-y-1'>
+      {/* Popular Topics */}
+      <div className='space-y-3'>
         <div className='flex items-center justify-between'>
           <SectionHeader
             icon={
-              <div className='p-1.5 rounded-lg bg-gradient-to-br from-amber-500 to-yellow-500'>
-                <Hash className='h-4 w-4 text-white' />
+              <div className='p-2 rounded-xl bg-linear-to-br from-amber-500 to-yellow-500 text-white shadow-lg shadow-amber-500/20'>
+                <Hash className='h-4 w-4' />
               </div>
             }
-            title='Popular Topics'
+            title='Top Categories'
           />
           {searchParams.size !== 0 && (
             <Button
+              variant='ghost'
+              size='sm'
               onClick={() => router.replace("/")}
-              className='mb-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg hover:shadow-xl transition-all duration-300'
-              size={"sm"}
+              className='text-[10px] font-bold text-orange-600 hover:bg-orange-500/10'
             >
-              Clear Filter
+              Reset
             </Button>
           )}
         </div>
@@ -280,30 +196,67 @@ export default function RightSidebarContent() {
         </div>
       </div>
 
-      <div className='h-px bg-gradient-to-r from-transparent via-orange-200 dark:via-orange-900 to-transparent' />
+      <div className='h-px bg-linear-to-r from-transparent via-muted to-transparent' />
+      <div
+        className='group relative p-1 rounded-2xl bg-linear-to-br from-orange-500/20 via-transparent to-amber-500/20 border border-orange-500/10 hover:border-orange-500/30 transition-all duration-500 cursor-pointer overflow-hidden'
+        onClick={() => setShowTweakDialog(true)}
+      >
+        <div className='absolute inset-0 bg-linear-to-r from-orange-500/5 to-amber-500/5 -translate-x-full group-hover:translate-x-0 transition-transform duration-700' />
 
-      {/* Share CTA */}
-      <ShareCTA />
+        <div className='relative flex items-center justify-between p-4 rounded-xl bg-background/40 backdrop-blur-md border border-white/5'>
+          <div className='flex items-center gap-3'>
+            <div className='p-2.5 rounded-xl bg-linear-to-br from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300'>
+              <SlidersHorizontal className='h-4 w-4' />
+            </div>
+            <div>
+              <h3 className='font-bold text-sm tracking-tight'>Personalize</h3>
+              <p className='text-[10px] text-muted-foreground font-bold uppercase tracking-wider'>Lab Settings</p>
+            </div>
+          </div>
+          <div className='flex items-center gap-1'>
+            <Kbd className='bg-orange-500/10 text-orange-600 border-none px-2 py-1'>Shift+{shortcutKeys.tweakDialog}</Kbd>
+          </div>
+        </div>
+      </div>
 
-      {/* Newsletter CTA */}
-      <div className='p-4 rounded-xl bg-gradient-to-br from-orange-500/5 via-amber-500/5 to-yellow-500/5 border border-orange-200/50 dark:border-orange-800/30 backdrop-blur-sm'>
-        <h4 className='font-bold text-sm text-gray-800 dark:text-gray-200 mb-2'>Stay Updated</h4>
-        <p className='text-xs text-gray-600 dark:text-gray-400 mb-3'>Get the latest articles delivered to your inbox</p>
-        <div className='flex gap-2'>
-          <Input
-            type='email'
-            placeholder='Your email'
-            required
-            onChange={(e) => setEmail(e.target.value)}
-            value={email}
-            className='flex-1 px-3 py-2 text-sm rounded-lg w-[70%] focus:outline-none focus:border-orange-500'
-          />
-          <Button
-            onClick={handleSubmit}
-            className='w-[20%] bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg hover:shadow-xl transition-all duration-300'
-          >
-            {submitting ? <Spinner /> : "Join"}
-          </Button>
+      {/* Newsletter Section */}
+
+      <div className='h-px bg-linear-to-r from-transparent via-muted to-transparent' />
+
+      <div className='group relative p-6 rounded-3xl bg-linear-to-br from-orange-500/5 to-amber-500/5 border border-orange-500/10 overflow-hidden'>
+        <div className='absolute -top-10 -right-10 w-32 h-32 bg-orange-500/5 blur-3xl rounded-full transition-all group-hover:bg-orange-500/10' />
+
+        <div className='relative space-y-3'>
+          <div className='flex items-center gap-3'>
+            <div className='p-2 rounded-xl bg-linear-to-br from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/20'>
+              <Mail className='h-4 w-4' />
+            </div>
+            <div>
+              <h3 className='font-bold text-sm tracking-tight'>Newsletter</h3>
+              <p className='text-[10px] text-muted-foreground font-bold uppercase tracking-wider'>Join the Lab</p>
+            </div>
+          </div>
+
+          <p className='text-xs text-muted-foreground leading-relaxed'>
+            Get the latest articles and lab experiments delivered to your inbox.
+          </p>
+
+          <div className='space-y-2'>
+            <Input
+              type='email'
+              placeholder='your@email.com'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className='h-10 rounded-xl bg-background/50 border-orange-500/10 focus-visible:ring-orange-500/20 placeholder:text-muted-foreground/50 text-xs font-medium'
+            />
+            <Button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className='w-full h-10 rounded-xl bg-linear-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 transition-all duration-300 font-bold text-xs uppercase tracking-widest'
+            >
+              {submitting ? <Loader2 className='h-4 w-4 animate-spin' /> : "Subscribe"}
+            </Button>
+          </div>
         </div>
       </div>
     </aside>

@@ -69,4 +69,16 @@ export const auth = betterAuth({
   advanced: {
     cookiePrefix: "nexg_lab",
   },
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        defaultValue: "USER",
+      },
+      banned: {
+        type: "boolean",
+        defaultValue: false,
+      },
+    },
+  },
 });

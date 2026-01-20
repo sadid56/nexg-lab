@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ArrowRight } from "lucide-react";
-import { Post } from "../../../../prisma/generated/client";
 import Image from "next/image";
 import { TBlog } from "@/types/blog-types";
 

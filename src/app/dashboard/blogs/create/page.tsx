@@ -1,9 +1,8 @@
 "use client";
 
-import { useCreateBlog } from "@/queries/actions/blogActions";
 import BlogForm from "../_components/BlogForm";
-import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useCreateBlog } from "@/react-query/blogs/actions";
 
 export default function CreateBlogPage() {
   const createBlog = useCreateBlog();
@@ -14,7 +13,6 @@ export default function CreateBlogPage() {
       submitText='Create Blog'
       onSubmit={async (payload) => {
         await createBlog.mutateAsync(payload);
-        toast.success("Blog created successfully");
         router.push("/dashboard/blogs");
       }}
     />

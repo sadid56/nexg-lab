@@ -1,5 +1,12 @@
 "use client";
 import { isServer, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CustomizationProvider, useCustomization } from "./CustomizationProvider";
+import { TweakDialog } from "@/components/layouts/_components/TweakDialog";
+
+function TweakManager() {
+  const { showTweakDialog, setShowTweakDialog } = useCustomization();
+  return <TweakDialog open={showTweakDialog} onOpenChange={setShowTweakDialog} />;
+}
 
 function makeQueryClient() {
   return new QueryClient({
@@ -27,5 +34,12 @@ function getQueryClient() {
 export default function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <CustomizationProvider>
+        {children}
+        <TweakManager />
+      </CustomizationProvider>
+    </QueryClientProvider>
+  );
 }

@@ -91,7 +91,7 @@ export const GetRecentBlog = async () => {
       orderBy: {
         createdAt: "desc",
       },
-      take: 5,
+      take: 3,
       where: {
         status: "active",
       },

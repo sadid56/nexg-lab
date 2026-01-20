@@ -1,4 +1,4 @@
-import { Home, Users, BookOpen, Settings2, LucideIcon } from "lucide-react";
+import { Home, Users, BookOpen, Settings2, LucideIcon, MessageSquare, Mail, Layers, Tag } from "lucide-react";
 
 export interface NavItem {
   title: string;
@@ -24,46 +24,34 @@ export const sidebarLinks: NavConfig = {
       icon: Users,
     },
     {
-      title: "Blogs",
+      title: "All Blogs",
       url: "/dashboard/blogs",
       icon: BookOpen,
-      items: [
-        {
-          title: "- All Blogs",
-          url: "/dashboard/blogs",
-        },
-        {
-          title: "- Create Blog",
-          url: "/dashboard/blogs/create",
-        },
-        {
-          title: "- Categories",
-          url: "/dashboard/blogs/categories",
-        },
-        {
-          title: "- Keywords",
-          url: "/dashboard/blogs/keywords",
-        },
-      ],
+    },
+    {
+      title: "Categories",
+      url: "/dashboard/categories",
+      icon: Layers,
+    },
+    {
+      title: "Keywords",
+      url: "/dashboard/keywords",
+      icon: Tag,
+    },
+    {
+      title: "Feedback",
+      url: "/dashboard/feedback",
+      icon: MessageSquare,
+    },
+    {
+      title: "Newsletter",
+      url: "/dashboard/newsletter",
+      icon: Mail,
     },
     {
       title: "Settings",
       url: "/dashboard/settings",
       icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "/dashboard/settings/general",
-        },
-        {
-          title: "Profile",
-          url: "/dashboard/settings/profile",
-        },
-        {
-          title: "Notifications",
-          url: "/dashboard/settings/notifications",
-        },
-      ],
     },
   ],
 };

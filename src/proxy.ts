@@ -1,6 +1,5 @@
 import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "./lib/prisma";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -11,10 +10,9 @@ export async function proxy(request: NextRequest) {
   const publicRoutes = ["/", "/auth/sign-in", "/auth/sign-up", "/auth", "/read", "/read/[slug]", "/auth/reset-password", "/api/feedbacks"];
 
   const isPublicRoute = publicRoutes.some(
-    (route) => pathname === route || (route !== "/" && pathname.startsWith(route + "/")) || pathname === "/"
+    (route) => pathname === route || (route !== "/" && pathname.startsWith(route + "/")) || pathname === "/",
   );
 
-  // Get session from Better Auth
   let user = null;
   try {
     const headers = new Headers(request.headers);
@@ -31,16 +29,6 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Fetch user role from database
-  let userRole: string | null = null;
-  if (user) {
-    const dbUser = await prisma.user.findUnique({
-      where: { id: user.id },
-      select: { role: true },
-    });
-    userRole = dbUser?.role || null;
-  }
-
   // Protect /dashboard for admin only
   if (pathname.startsWith("/dashboard")) {
     if (!user) {
@@ -49,7 +37,7 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(signInUrl);
     }
 
-    if (userRole !== "ADMIN") {
+    if (user?.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", request.url));
     }
   }

@@ -68,10 +68,8 @@ export default function Navbar() {
               <NavbarSearchBox />
             </Suspense>
 
-            <ModeToggle />
-
             {/* GitHub Button */}
-            <Button asChild variant='outline' size='sm' className='px-3 py-1'>
+            <Button asChild variant='outline' className='px-3 py-1'>
               <a href='https://github.com/sadid56/nexg-lab' target='_blank' rel='noopener noreferrer'>
                 <IconBrandGithub stroke={2} /> GitHub
               </a>

@@ -8,12 +8,12 @@ import { sidebarLinks } from "@/constants/sidebarLinks";
 import Link from "next/link";
 
 export function DashboardSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { state } = useSidebar();
+  const { state, setOpenMobile } = useSidebar();
 
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
-        <Link className='font-medium text-xl pl-2 py-3' href={"/"}>
+        <Link className='font-medium text-xl pl-2 py-3' href={"/"} onClick={() => setOpenMobile(false)}>
           {state === "collapsed" ? "D" : "Dashboard"}
         </Link>
       </SidebarHeader>

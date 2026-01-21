@@ -1,10 +1,8 @@
 import React, { ReactNode } from "react";
-
-import { Separator } from "@/components/ui/separator";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/layouts/dashboard-sidebar";
-import BreadCrumb from "@/components/common/BreadCrumb";
 import { Metadata } from "next";
+import { DashboardHeader } from "@/components/layouts/dashboard-header";
 
 export const metadata: Metadata = {
   title: "Admin - Dashboard",
@@ -16,13 +14,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
-        <header className='flex h-16 shrink-0 items-center gap-2 border-b'>
-          <div className='flex items-center gap-2 px-3'>
-            <SidebarTrigger />
-            <Separator orientation='vertical' className='mr-2 h-4' />
-            <BreadCrumb />
-          </div>
-        </header>
+        <DashboardHeader />
         <div className='flex flex-1 flex-col gap-4 p-4'>{children}</div>
       </SidebarInset>
     </SidebarProvider>

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ArrowRight } from "lucide-react";
-import { Post } from "../../../../prisma/generated/client";
 import Image from "next/image";
 import { TBlog } from "@/types/blog-types";
 
@@ -23,7 +22,7 @@ export default function BlogCardHorizontal({ post }: { post: TBlog }) {
 
             {/* Category badge */}
             <div className='absolute top-4 left-4 z-10'>
-              <Badge className='border-0 bg-gradient-to-r from-orange-500 to-pink-500 px-3 py-1 text-white shadow-lg backdrop-blur-sm'>
+              <Badge className='border-0 bg-gradient-to-r from-theme-primary to-theme-secondary px-3 py-1 text-white shadow-lg backdrop-blur-sm'>
                 {post.category}
               </Badge>
             </div>
@@ -50,7 +49,7 @@ export default function BlogCardHorizontal({ post }: { post: TBlog }) {
 
             {/* Title */}
             <Link href={`/read/${post.slug}`} className='group/link block'>
-              <h3 className='text-xl md:text-2xl font-bold leading-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text transition-all duration-300 group-hover/link:from-orange-500 group-hover/link:to-pink-500'>
+              <h3 className='text-xl md:text-2xl font-bold leading-tight bg-gradient-to-br from-foreground to-foreground/70 bg-clip-text transition-all duration-300 group-hover/link:from-theme-primary group-hover/link:to-theme-secondary'>
                 {post.title}
               </h3>
             </Link>
@@ -67,7 +66,7 @@ export default function BlogCardHorizontal({ post }: { post: TBlog }) {
                 <Badge
                   key={tag}
                   variant='outline'
-                  className='text-xs border-muted transition-colors hover:border-orange-500/50 hover:bg-orange-500/5'
+                  className='text-xs border-muted transition-colors hover:border-theme-primary/50 hover:bg-theme-primary/5'
                 >
                   #{tag}
                 </Badge>
@@ -82,7 +81,7 @@ export default function BlogCardHorizontal({ post }: { post: TBlog }) {
             {/* CTA */}
             <Link
               href={`/read/${post.slug}`}
-              className='group/arrow flex items-center gap-2 text-sm font-semibold text-orange-500 transition-all duration-300 hover:gap-3'
+              className='group/arrow flex items-center gap-2 text-sm font-semibold text-theme-primary transition-all duration-300 hover:gap-3'
             >
               Read
               <ArrowRight className='h-4 w-4 transition-transform group-hover/arrow:translate-x-1' />

@@ -4,12 +4,12 @@ import { useState } from "react";
 import Image from "next/image";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { markdownComponents } from "./MarkdownComponents";
+import { useMarkdownComponents } from "./MarkdownComponents";
 import { TBlog } from "@/types/blog-types";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, Hash } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,10 +17,13 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { toast } from "sonner";
 import { feedbackSchema } from "@/validations/feedback";
-import { useSubmitFeedbacks } from "@/queries/actions/feedbackActions";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { format } from "date-fns";
 import Link from "next/link";
+import { useSubmitFeedbacks } from "@/react-query/feedback/actions";
+
+import ShareArticle from "./ShareArticle";
+import { TYPOGRAPHY } from "@/store/useConfigStore";
 
 type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 
@@ -31,6 +34,8 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
 
   const [showSignInModal, setShowSignInModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const markdownComponents = useMarkdownComponents();
 
   const submitFeedback = useSubmitFeedbacks();
 
@@ -96,40 +101,54 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
   return (
     <div className='mb-10'>
       {/* Header */}
-      <div className='flex items-center gap-2 mb-4'>
-        <Link href={"/"} className='cursor-pointer'>
-          <ArrowLeft />
+      <div className='flex items-center gap-4 mb-6'>
+        <Link
+          href={"/"}
+          className='p-2 rounded-full hover:bg-theme-primary/10 text-muted-foreground hover:text-theme-primary transition-all duration-300'
+        >
+          <ArrowLeft className='h-6 w-6' />
         </Link>
-        <h1 className='text-xl md:text-3xl font-bold'>{blog.title}</h1>
+        <h1 className={TYPOGRAPHY.title}>{blog.title}</h1>
       </div>
 
-      <p className='text-sm text-gray-500 mb-4'>
-        Category: {blog.category} | Last updated at: {format(new Date(blog.updatedAt), "dd MMMM, yyyy")}
-      </p>
+      <div className='flex items-center gap-3 mb-8 text-sm font-medium'>
+        <div className='flex items-center gap-2 px-3 py-1 rounded-full bg-theme-primary/10 text-theme-primary'>
+          <Hash className='h-3.5 w-3.5' />
+          <span>{blog.category}</span>
+        </div>
+        <div className='h-1 w-1 rounded-full bg-muted-foreground/30' />
+        <p className='text-muted-foreground'>Last updated: {format(new Date(blog.updatedAt), "MMMM dd, yyyy")}</p>
+      </div>
 
       {/* Cover Image */}
-      {blog.coverImage && <Image width={800} height={800} src={blog.coverImage} alt={blog.title} className='w-full h-auto rounded mb-6' />}
+      {blog.coverImage && (
+        <div className='relative aspect-video w-full overflow-hidden rounded-3xl mb-8 shadow-2xl shadow-theme-primary/10 border border-theme-primary/10'>
+          <Image
+            fill
+            src={blog.coverImage}
+            alt={blog.title}
+            className='object-cover hover:scale-105 transition-transform duration-700'
+            priority
+          />
+        </div>
+      )}
 
-      {/* Tags */}
-      <div className='flex gap-2 mb-6'>
-        {blog.tags.map((tag) => (
-          <span key={tag} className='bg-orange-100 text-orange-700 px-2 py-1 rounded'>
-            {tag}
-          </span>
-        ))}
+      {/* Tags & Sharing */}
+      <div className='mb-10'>
+        <ShareArticle title={blog.title} url={`/read/${blog.slug}`} />
       </div>
 
       {/* Description */}
-      <p className='mb-6'>{blog.descriptions}</p>
+      <div className={TYPOGRAPHY.description}>{blog.descriptions}</div>
 
       {/* Content */}
-      <div className='mb-6'>
+      <div className='prose prose-orange dark:prose-invert max-w-none prose-pre:bg-transparent prose-pre:p-0 mb-16'>
         <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
           {blog.content}
         </Markdown>
       </div>
 
-      <div className='mt-12 border-t pt-8'>
+      <div className='mt-12 border-t border-theme-primary/10 pt-12 max-w-2xl'>
         <h2 className='text-2xl font-bold mb-4'>Share Your Feedback</h2>
 
         <Form {...form}>
@@ -149,8 +168,8 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
                           onClick={() => field.onChange(item.emoji)}
                           className={`flex flex-col cursor-pointer items-center gap-1 w-14 h-12 p-2 rounded-lg border-2 transition-all hover:scale-110 ${
                             field.value === item.emoji
-                              ? "border-orange-500 bg-orange-50"
-                              : "border-gray-200 hover:border-orange-300 dark:border-gray-500"
+                              ? "border-theme-primary bg-theme-primary/10"
+                              : "border-gray-200 hover:border-theme-primary/30 dark:border-gray-500"
                           }`}
                           title={item.label}
                         >
@@ -178,7 +197,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
               )}
             />
 
-            <Button type='submit' disabled={isLoading} className='bg-orange-600 hover:bg-orange-700 text-white'>
+            <Button type='submit' disabled={isLoading} className='bg-theme-primary hover:bg-theme-primary/90 text-white'>
               <Send className='w-4 h-4 mr-2' />
               {isLoading ? "Submitting..." : "Submit Feedback"}
             </Button>
@@ -196,7 +215,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
           <DialogFooter className='flex flex-col gap-3 sm:flex-col mt-5'>
             <Button
               onClick={() => router.push(`/auth/sign-in?callbackUrl=${encodeURIComponent(pathname)}`)}
-              className='bg-orange-600 hover:bg-orange-700 w-full text-white'
+              className='bg-theme-primary hover:bg-theme-primary/90 w-full text-white'
             >
               Sign In to Submit
             </Button>

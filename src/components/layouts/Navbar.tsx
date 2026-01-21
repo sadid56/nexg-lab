@@ -8,10 +8,9 @@ import { useRouter } from "next/navigation";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import useSignOut from "@/hooks/useSignOut";
 import Container from "@/components/global/Container";
-import { ModeToggle } from "@/components/global/ModeToggle";
 import { useOutsideClick } from "@/hooks/useOutSideClick";
-import NavbarSearchBox from "./_components/NavbarSearchBox";
-import NavbarMobileDrawer from "./_components/NavbarMobileDrawer";
+import NavbarSearchBox from "./NavbarSearchBox";
+import NavbarMobileDrawer from "./NavbarMobileDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { User } from "@/types/users-types";
@@ -48,13 +47,13 @@ export default function Navbar() {
           {/* Left side - Website Name */}
           <Link href='/'>
             <h1 className='flex items-center gap-2 text-2xl md:text-3xl font-mono font-semibold'>
-              <span className='text-orange-400 animate-pulse'>{">"}</span>
+              <span className='text-theme-primary animate-pulse'>{">"}</span>
               <div className='relative'>
-                <span className='font-bold bg-gradient-to-r from-amber-500 via-orange-400 to-amber-600 bg-clip-text text-transparent animate-gradient'>
+                <span className='font-bold bg-gradient-to-r from-theme-primary via-theme-secondary to-theme-primary bg-clip-text text-transparent animate-gradient'>
                   NexG
                 </span>
-                <span className='font-bold text-amber-200'>Lab</span>
-                <span className='absolute -right-4 text-orange-300'>_</span>
+                <span className='font-bold text-theme-secondary/80'>Lab</span>
+                <span className='absolute -right-4 text-theme-primary/60'>_</span>
               </div>
             </h1>
           </Link>
@@ -68,10 +67,8 @@ export default function Navbar() {
               <NavbarSearchBox />
             </Suspense>
 
-            <ModeToggle />
-
             {/* GitHub Button */}
-            <Button asChild variant='outline' size='sm' className='px-3 py-1'>
+            <Button asChild variant='outline' className='px-3 py-1'>
               <a href='https://github.com/sadid56/nexg-lab' target='_blank' rel='noopener noreferrer'>
                 <IconBrandGithub stroke={2} /> GitHub
               </a>

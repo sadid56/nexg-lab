@@ -7,6 +7,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./collapsible";
@@ -27,6 +28,7 @@ export function NavMain({
   }[];
 }) {
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
 
   return (
     <SidebarGroup>
@@ -40,7 +42,7 @@ export function NavMain({
               <Collapsible key={item.title} asChild defaultOpen={isActive} className='group/collapsible'>
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className={`cursor-pointer ${isActive ? "bg-orange-500 text-white" : ""}`} tooltip={item.title}>
+                    <SidebarMenuButton className={`cursor-pointer ${isActive ? "bg-theme-primary text-white" : ""}`} tooltip={item.title}>
                       {item.icon && <item.icon className='mr-2' />}
                       <span>{item.title}</span>
                       <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
@@ -54,7 +56,11 @@ export function NavMain({
                         return (
                           <SidebarMenuSubItem key={subItem.title}>
                             <SidebarMenuSubButton asChild>
-                              <Link href={subItem.url} className={`${isSubActive ? "bg-orange-500 text-white" : ""}`}>
+                              <Link
+                                href={subItem.url}
+                                className={`${isSubActive ? "bg-theme-primary text-white" : ""}`}
+                                onClick={() => setOpenMobile(false)}
+                              >
                                 <span>{subItem.title}</span>
                               </Link>
                             </SidebarMenuSubButton>
@@ -70,8 +76,8 @@ export function NavMain({
             // Render normal link button
             return (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild className={`cursor-pointer ${isActive ? "bg-orange-500 text-white" : ""}`}>
-                  <Link href={item.url}>
+                <SidebarMenuButton asChild className={`cursor-pointer ${isActive ? "bg-theme-primary text-white" : ""}`}>
+                  <Link href={item.url} onClick={() => setOpenMobile(false)}>
                     {item.icon && <item.icon className='mr-2' />}
                     <span>{item.title}</span>
                   </Link>

@@ -11,9 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { X, Check } from "lucide-react";
-
-import { useKeywords } from "@/queries/actions/keywordsActions";
-import { useCategories } from "@/queries/actions/categoryActions";
 import { Keyword } from "@/types/keywords-types";
 
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
@@ -25,6 +22,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { convertToBase64 } from "@/utils/convertToBase64";
 import { calculateReadTime } from "@/utils/calculateReadTimes";
 import { toast } from "sonner";
+import { useKeywords } from "@/react-query/keywords/actions";
+import { useCategories } from "@/react-query/categories/actions";
 
 export interface BlogFormValues {
   title: string;
@@ -116,10 +115,10 @@ const BlogForm: React.FC<BlogFormProps> = ({ initialData, onSubmit, submitText =
     (tag: string) => {
       setValue(
         "tags",
-        getValues("tags").filter((t) => t !== tag)
+        getValues("tags").filter((t) => t !== tag),
       );
     },
-    [getValues, setValue]
+    [getValues, setValue],
   );
 
   return (

@@ -31,9 +31,11 @@ const NavbarSearchBox = () => {
 
       if (searchQuery.trim()) {
         params.set("search", searchQuery);
+        params.delete("page");
         router.replace(`/?${params.toString()}`, { scroll: false });
       } else {
         params.delete("search");
+        params.delete("page");
         router.replace("/", { scroll: false });
       }
 

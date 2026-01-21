@@ -42,7 +42,7 @@ export function NavMain({
               <Collapsible key={item.title} asChild defaultOpen={isActive} className='group/collapsible'>
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className={`cursor-pointer ${isActive ? "bg-orange-500 text-white" : ""}`} tooltip={item.title}>
+                    <SidebarMenuButton className={`cursor-pointer ${isActive ? "bg-theme-primary text-white" : ""}`} tooltip={item.title}>
                       {item.icon && <item.icon className='mr-2' />}
                       <span>{item.title}</span>
                       <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
@@ -58,7 +58,7 @@ export function NavMain({
                             <SidebarMenuSubButton asChild>
                               <Link
                                 href={subItem.url}
-                                className={`${isSubActive ? "bg-orange-500 text-white" : ""}`}
+                                className={`${isSubActive ? "bg-theme-primary text-white" : ""}`}
                                 onClick={() => setOpenMobile(false)}
                               >
                                 <span>{subItem.title}</span>
@@ -76,7 +76,7 @@ export function NavMain({
             // Render normal link button
             return (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild className={`cursor-pointer ${isActive ? "bg-orange-500 text-white" : ""}`}>
+                <SidebarMenuButton asChild className={`cursor-pointer ${isActive ? "bg-theme-primary text-white" : ""}`}>
                   <Link href={item.url} onClick={() => setOpenMobile(false)}>
                     {item.icon && <item.icon className='mr-2' />}
                     <span>{item.title}</span>

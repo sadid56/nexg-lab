@@ -2,42 +2,48 @@
 
 import prisma from "@/lib/prisma";
 
-export const GetBlogs = async (category?: string, search?: string) => {
-  console.log(category, search, "hi");
+export const GetBlogs = async (category?: string, search?: string, page: number = 1, limit: number = 3) => {
+  const skip = (page - 1) * limit;
 
   try {
-    const blogs = await prisma.post.findMany({
-      where: {
-        status: "active",
-
-        ...(category && {
-          category: {
-            equals: category,
-            mode: "insensitive",
-          },
-        }),
-
-        ...(search && {
-          OR: [
-            {
-              title: {
-                contains: search,
-                mode: "insensitive",
-              },
+    const whereClause: any = {
+      status: "active",
+      ...(category && {
+        category: {
+          equals: category,
+          mode: "insensitive" as const,
+        },
+      }),
+      ...(search && {
+        OR: [
+          {
+            title: {
+              contains: search,
+              mode: "insensitive" as const,
             },
-          ],
-        }),
-      },
+          },
+        ],
+      }),
+    };
 
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const [blogs, totalCount] = await Promise.all([
+      prisma.post.findMany({
+        where: whereClause,
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip,
+        take: limit,
+      }),
+      prisma.post.count({
+        where: whereClause,
+      }),
+    ]);
 
-    return blogs;
+    return { blogs, totalCount };
   } catch (error) {
     console.error("GetBlogs error:", error);
-    return [];
+    return { blogs: [], totalCount: 0 };
   }
 };
 

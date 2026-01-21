@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useSubmitFeedbacks } from "@/react-query/feedback/actions";
 
 import ShareArticle from "./ShareArticle";
+import { TYPOGRAPHY } from "@/store/useConfigStore";
 
 type FeedbackFormValues = z.infer<typeof feedbackSchema>;
 
@@ -98,20 +99,20 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
   };
 
   return (
-    <div className='mb-10 max-w-4xl mx-auto'>
+    <div className='mb-10'>
       {/* Header */}
       <div className='flex items-center gap-4 mb-6'>
         <Link
           href={"/"}
-          className='p-2 rounded-full hover:bg-orange-500/10 text-muted-foreground hover:text-orange-600 transition-all duration-300'
+          className='p-2 rounded-full hover:bg-theme-primary/10 text-muted-foreground hover:text-theme-primary transition-all duration-300'
         >
           <ArrowLeft className='h-6 w-6' />
         </Link>
-        <h1 className='text-2xl md:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-gray-100'>{blog.title}</h1>
+        <h1 className={TYPOGRAPHY.title}>{blog.title}</h1>
       </div>
 
       <div className='flex items-center gap-3 mb-8 text-sm font-medium'>
-        <div className='flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 text-orange-600'>
+        <div className='flex items-center gap-2 px-3 py-1 rounded-full bg-theme-primary/10 text-theme-primary'>
           <Hash className='h-3.5 w-3.5' />
           <span>{blog.category}</span>
         </div>
@@ -121,7 +122,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
 
       {/* Cover Image */}
       {blog.coverImage && (
-        <div className='relative aspect-video w-full overflow-hidden rounded-3xl mb-8 shadow-2xl shadow-orange-500/10 border border-orange-500/10'>
+        <div className='relative aspect-video w-full overflow-hidden rounded-3xl mb-8 shadow-2xl shadow-theme-primary/10 border border-theme-primary/10'>
           <Image
             fill
             src={blog.coverImage}
@@ -138,9 +139,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
       </div>
 
       {/* Description */}
-      <div className='mb-10 p-6 rounded-2xl bg-orange-500/5 border border-orange-500/10 italic text-lg text-gray-700 dark:text-gray-300 leading-relaxed'>
-        {blog.descriptions}
-      </div>
+      <div className={TYPOGRAPHY.description}>{blog.descriptions}</div>
 
       {/* Content */}
       <div className='prose prose-orange dark:prose-invert max-w-none prose-pre:bg-transparent prose-pre:p-0 mb-16'>
@@ -149,7 +148,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
         </Markdown>
       </div>
 
-      <div className='mt-12 border-t border-orange-500/10 pt-12 max-w-2xl'>
+      <div className='mt-12 border-t border-theme-primary/10 pt-12 max-w-2xl'>
         <h2 className='text-2xl font-bold mb-4'>Share Your Feedback</h2>
 
         <Form {...form}>
@@ -169,8 +168,8 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
                           onClick={() => field.onChange(item.emoji)}
                           className={`flex flex-col cursor-pointer items-center gap-1 w-14 h-12 p-2 rounded-lg border-2 transition-all hover:scale-110 ${
                             field.value === item.emoji
-                              ? "border-orange-500 bg-orange-50"
-                              : "border-gray-200 hover:border-orange-300 dark:border-gray-500"
+                              ? "border-theme-primary bg-theme-primary/10"
+                              : "border-gray-200 hover:border-theme-primary/30 dark:border-gray-500"
                           }`}
                           title={item.label}
                         >
@@ -198,7 +197,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
               )}
             />
 
-            <Button type='submit' disabled={isLoading} className='bg-orange-600 hover:bg-orange-700 text-white'>
+            <Button type='submit' disabled={isLoading} className='bg-theme-primary hover:bg-theme-primary/90 text-white'>
               <Send className='w-4 h-4 mr-2' />
               {isLoading ? "Submitting..." : "Submit Feedback"}
             </Button>
@@ -216,7 +215,7 @@ const BlogDetails = ({ blog }: { blog: TBlog }) => {
           <DialogFooter className='flex flex-col gap-3 sm:flex-col mt-5'>
             <Button
               onClick={() => router.push(`/auth/sign-in?callbackUrl=${encodeURIComponent(pathname)}`)}
-              className='bg-orange-600 hover:bg-orange-700 w-full text-white'
+              className='bg-theme-primary hover:bg-theme-primary/90 w-full text-white'
             >
               Sign In to Submit
             </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import BreadCrumb from "../common/BreadCrumb";
+import BreadCrumb from "../dashboard/BreadCrumb";
 import { Separator } from "../ui/separator";
 import { SidebarTrigger } from "../ui/sidebar";
 import {

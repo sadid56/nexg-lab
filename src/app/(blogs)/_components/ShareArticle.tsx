@@ -51,23 +51,23 @@ export default function ShareArticle({ title, url, className }: ShareArticleProp
   ];
 
   return (
-    <div className={cn("flex flex-wrap items-center gap-4 py-6 border-b border-orange-500/10 dark:border-orange-500/20", className)}>
+    <div className={cn("flex flex-wrap items-center gap-4 py-6 border-b border-theme-primary/10 dark:border-theme-primary/20", className)}>
       <div className='flex items-center gap-2'>
-        <div className='p-2 rounded-lg bg-linear-to-br from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/20'>
+        <div className='p-2 rounded-lg bg-linear-to-br from-theme-primary to-theme-secondary text-white shadow-lg shadow-theme-primary/20'>
           <Share2 className='h-4 w-4' />
         </div>
         <span className='font-bold text-sm text-gray-800 dark:text-gray-200'>Share this article</span>
       </div>
 
       <div className='flex items-center gap-2 flex-1'>
-        <div className='flex items-center gap-2 p-1.5 rounded-full bg-muted/50 dark:bg-muted/20 border border-muted flex-1 max-w-md'>
+        <div className='flex items-center gap-2 p-1 md:p-1.5 rounded-full bg-muted/50 dark:bg-muted/20 border border-muted flex-1 max-w-[220px] md:max-w-md'>
           <div className='px-3 py-1 text-xs font-mono text-muted-foreground truncate flex-1'>{fullUrl || "Loading..."}</div>
           <Button
             size='sm'
             variant='ghost'
             className={cn(
               "h-8 rounded-full px-4 transition-all duration-300",
-              copied ? "bg-green-500/10 text-green-600 hover:bg-green-500/20" : "hover:bg-orange-500/10 hover:text-orange-600",
+              copied ? "bg-green-500/10 text-green-600 hover:bg-green-500/20" : "hover:bg-theme-primary/10 hover:text-theme-primary",
             )}
             onClick={handleCopyLink}
           >

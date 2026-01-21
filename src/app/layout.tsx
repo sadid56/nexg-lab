@@ -27,6 +27,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const storage = localStorage.getItem('lab-config-storage');
+                  if (!storage) return;
+                  const { state } = JSON.parse(storage);
+                  const themeColor = state.themeColor;
+                  const colors = {
+                    orange: { primary: "#f97316", secondary: "#f59e0b" },
+                    blue: { primary: "#3b82f6", secondary: "#06b6d4" },
+                    green: { primary: "#22c55e", secondary: "#10b981" },
+                    purple: { primary: "#a855f7", secondary: "#ec4899" },
+                    rose: { primary: "#e11d48", secondary: "#fb7185" },
+                    cyan: { primary: "#0891b2", secondary: "#06b6d4" },
+                    indigo: { primary: "#4f46e5", secondary: "#6366f1" }
+                  };
+                  const selection = colors[themeColor] || colors.orange;
+                  document.documentElement.style.setProperty('--theme-primary', selection.primary);
+                  document.documentElement.style.setProperty('--theme-secondary', selection.secondary);
+                } catch (e) {}
+              })()
+            `,
+          }}
+        />
+      </head>
       <body suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
           <ToastProvider />

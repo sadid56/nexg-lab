@@ -48,7 +48,7 @@ import {
   twilight,
   xonokai,
 } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useCustomization } from "@/providers/CustomizationProvider";
+import { useConfigStore, TYPOGRAPHY } from "@/store/useConfigStore";
 
 const syntaxThemes: Record<string, any> = {
   vscDarkPlus,
@@ -99,7 +99,7 @@ const syntaxThemes: Record<string, any> = {
 
 const CodeBlock = ({ className, children }: any) => {
   const [copied, setCopied] = useState(false);
-  const { syntaxTheme } = useCustomization();
+  const { syntaxTheme } = useConfigStore();
   const codeText = String(children).replace(/\n$/, "");
   const language = className?.replace("language-", "") || "code";
 
@@ -111,7 +111,7 @@ const CodeBlock = ({ className, children }: any) => {
   };
 
   return (
-    <div className='relative group mb-6 rounded-2xl overflow-hidden border border-muted/50 bg-gradient-to-br from-muted/50 to-muted/30 backdrop-blur-sm shadow transition-all duration-300'>
+    <div className='relative group mb-6 rounded-2xl overflow-hidden border border-muted/50 bg-linear-to-br from-muted/50 to-muted/30 backdrop-blur-sm shadow transition-all duration-300'>
       {/* Language badge */}
       <div className='absolute top-3 left-4 z-10'>
         <span className='text-xs font-mono font-semibold text-muted-foreground bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full border border-muted/50'>
@@ -126,9 +126,11 @@ const CodeBlock = ({ className, children }: any) => {
           customStyle={{
             margin: 0,
             padding: "1rem",
-            background: "transparent",
+            backgroundColor: "transparent",
+            backgroundImage: "none",
             fontSize: "0.875rem",
             lineHeight: "1.625",
+            borderRadius: "0.7rem",
           }}
           codeTagProps={{
             style: {
@@ -163,80 +165,18 @@ const CodeBlock = ({ className, children }: any) => {
 };
 
 export const useMarkdownComponents = () => {
-  const { fontSizeH1, fontSizeH2, fontSizeH3, fontSizeP, sectionSpacing } = useCustomization();
-
   return {
-    h1: ({ ...props }: any) => (
-      <h1
-        className='text-3xl md:text-5xl font-bold bg-linear-to-r from-foreground to-foreground/70 bg-clip-text text-transparent leading-tight'
-        style={{
-          fontSize: `${fontSizeH1}px`,
-          marginTop: `${sectionSpacing * 2}px`,
-          marginBottom: `${sectionSpacing}px`,
-        }}
-        {...props}
-      />
-    ),
+    h1: ({ ...props }: any) => <h1 className={TYPOGRAPHY.h1} {...props} />,
 
-    h2: ({ ...props }: any) => (
-      <h2
-        className='text-2xl md:text-4xl font-bold pb-3 border-b-2 border-gradient-to-r from-primary/50 to-transparent'
-        style={{
-          fontSize: `${fontSizeH2}px`,
-          marginTop: `${sectionSpacing * 1.5}px`,
-          marginBottom: `${sectionSpacing * 0.8}px`,
-        }}
-        {...props}
-      />
-    ),
+    h2: ({ ...props }: any) => <h2 className={TYPOGRAPHY.h2} {...props} />,
 
-    h3: ({ ...props }: any) => (
-      <h3
-        className='text-xl md:text-3xl font-semibold text-foreground/90'
-        style={{
-          fontSize: `${fontSizeH3}px`,
-          marginTop: `${sectionSpacing * 1.2}px`,
-          marginBottom: `${sectionSpacing * 0.6}px`,
-        }}
-        {...props}
-      />
-    ),
+    h3: ({ ...props }: any) => <h3 className={TYPOGRAPHY.h3} {...props} />,
 
-    h4: ({ ...props }: any) => (
-      <h4
-        className='text-lg md:text-2xl font-semibold text-foreground/80'
-        style={{
-          fontSize: `${fontSizeH3 * 0.9}px`,
-          marginTop: `${sectionSpacing}px`,
-          marginBottom: `${sectionSpacing * 0.5}px`,
-        }}
-        {...props}
-      />
-    ),
+    h4: ({ ...props }: any) => <h4 className={TYPOGRAPHY.h4} {...props} />,
 
-    h5: ({ ...props }: any) => (
-      <h5
-        className='text-xs md:text-xl font-semibold text-foreground/75'
-        style={{
-          fontSize: `${fontSizeH3 * 0.8}px`,
-          marginTop: `${sectionSpacing * 0.8}px`,
-          marginBottom: `${sectionSpacing * 0.4}px`,
-        }}
-        {...props}
-      />
-    ),
+    h5: ({ ...props }: any) => <h5 className={TYPOGRAPHY.h5} {...props} />,
 
-    h6: ({ ...props }: any) => (
-      <h6
-        className='text-base md:text-lg font-semibold text-foreground/70'
-        style={{
-          fontSize: `${fontSizeH3 * 0.7}px`,
-          marginTop: `${sectionSpacing * 0.6}px`,
-          marginBottom: `${sectionSpacing * 0.3}px`,
-        }}
-        {...props}
-      />
-    ),
+    h6: ({ ...props }: any) => <h6 className={TYPOGRAPHY.h6} {...props} />,
 
     p: ({ node, children, ...props }: any) => {
       if (node.children?.length === 1 && node.children[0].type === "element" && node.children[0].tagName === "code") {
@@ -244,14 +184,7 @@ export const useMarkdownComponents = () => {
       }
 
       return (
-        <p
-          className='text-base md:text-lg text-foreground/80 leading-relaxed'
-          style={{
-            fontSize: `${fontSizeP}px`,
-            marginBottom: `${sectionSpacing}px`,
-          }}
-          {...props}
-        >
+        <p className={TYPOGRAPHY.p} {...props}>
           {children}
         </p>
       );
@@ -260,7 +193,7 @@ export const useMarkdownComponents = () => {
     a: ({ href, children, ...props }: any) => (
       <a
         href={href}
-        className='flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 underline decoration-blue-600/30 hover:decoration-blue-600 underline-offset-2 transition-all font-medium group'
+        className={TYPOGRAPHY.link}
         target={href?.startsWith("http") ? "_blank" : undefined}
         rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
         {...props}
@@ -334,7 +267,7 @@ export const useMarkdownComponents = () => {
       </div>
     ),
 
-    thead: ({ ...props }: any) => <thead className='bg-gradient-to-r from-muted/80 to-muted/40 backdrop-blur-sm' {...props} />,
+    thead: ({ ...props }: any) => <thead className='bg-linear-to-r from-muted/80 to-muted/40 backdrop-blur-sm' {...props} />,
 
     th: ({ ...props }: any) => (
       <th className='border-b border-muted px-6 py-4 text-left font-bold text-foreground text-sm uppercase tracking-wide' {...props} />
@@ -351,7 +284,7 @@ export const useMarkdownComponents = () => {
           {...props}
         />
         {alt && (
-          <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
+          <div className='absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
             <p className='text-white text-sm flex items-center gap-2'>
               <ImageIcon size={16} />
               {alt}

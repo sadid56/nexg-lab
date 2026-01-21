@@ -1,10 +1,17 @@
 "use client";
 import { isServer, QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { CustomizationProvider, useCustomization } from "./CustomizationProvider";
-import { TweakDialog } from "@/components/layouts/_components/TweakDialog";
+import { useConfigStore } from "@/store/useConfigStore";
+import { TweakDialog } from "@/components/global/TweakDialog";
+
+import { useKeyboardShortcut } from "@/hooks/useKeyboardShortcut";
 
 function TweakManager() {
-  const { showTweakDialog, setShowTweakDialog } = useCustomization();
+  const { showTweakDialog, setShowTweakDialog, shortcutKeys, toggleZenMode, toggleRightSidebar } = useConfigStore();
+
+  useKeyboardShortcut({ key: shortcutKeys.tweakDialog, shiftKey: true }, () => setShowTweakDialog(!showTweakDialog));
+  useKeyboardShortcut({ key: shortcutKeys.zenMode, shiftKey: true }, () => toggleZenMode());
+  useKeyboardShortcut({ key: shortcutKeys.sidebar, shiftKey: true }, () => toggleRightSidebar());
+
   return <TweakDialog open={showTweakDialog} onOpenChange={setShowTweakDialog} />;
 }
 
@@ -12,7 +19,6 @@ function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        // With SSR, we usually want to set some default staleTime
         staleTime: 60 * 1000,
       },
     },
@@ -23,7 +29,6 @@ let browserQueryClient: QueryClient | undefined = undefined;
 
 function getQueryClient() {
   if (isServer) {
-    // Server: always make a new query client
     return makeQueryClient();
   } else {
     if (!browserQueryClient) browserQueryClient = makeQueryClient();
@@ -36,10 +41,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CustomizationProvider>
-        {children}
-        <TweakManager />
-      </CustomizationProvider>
+      {children}
+      <TweakManager />
     </QueryClientProvider>
   );
 }
